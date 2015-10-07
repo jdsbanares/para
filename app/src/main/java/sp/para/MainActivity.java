@@ -2,6 +2,7 @@ package sp.para;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 
 import org.osmdroid.api.IMapController;
 import org.osmdroid.bonuspack.overlays.Polyline;
@@ -14,7 +15,10 @@ import org.osmdroid.views.MapView;
 
 import org.osmdroid.bonuspack.overlays.Marker;
 
+import java.io.File;
 import java.util.ArrayList;
+
+import sp.para.models.*;
 
 public class MainActivity extends Activity {
     @Override
@@ -44,20 +48,30 @@ public class MainActivity extends Activity {
         map.getOverlays().add(startMarker);
         map.invalidate();
 
-        RoadManager roadManager = new OSRMRoadManager();
+//        RoadManager roadManager = new OSRMRoadManager();
+//
+//        ArrayList<GeoPoint> waypoints = new ArrayList<GeoPoint>();
+//        waypoints.add(startPoint);
+//        GeoPoint endPoint = new GeoPoint(14.695615, 120.971597);
+//        waypoints.add(endPoint);
+//
+//        Road road = roadManager.getRoad(waypoints);
+//
+//        Polyline roadOverlay = RoadManager.buildRoadOverlay(road, this);
 
-        ArrayList<GeoPoint> waypoints = new ArrayList<GeoPoint>();
-        waypoints.add(startPoint);
-        GeoPoint endPoint = new GeoPoint(14.695615, 120.971597);
-        waypoints.add(endPoint);
+//        map.getOverlays().add(roadOverlay);
 
-        Road road = roadManager.getRoad(waypoints);
+//        map.invalidate();
 
-        Polyline roadOverlay = RoadManager.buildRoadOverlay(road, this);
+        Stops.populate(getResources().openRawResource(R.raw.stops));
 
-        map.getOverlays().add(roadOverlay);
-
-        map.invalidate();
-
+        Log.d("--------------APP", "Size: --------------- "+Stops.list().size());
+//        for(Stops currStop: Stops.list()){
+//            Marker stopMarker = new Marker(map);
+//            stopMarker.setPosition(new GeoPoint(currStop.getLat(), currStop.getLon()));
+//            stopMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+//            map.getOverlays().add(stopMarker);
+//        }
+//        map.invalidate();
     }
 }
