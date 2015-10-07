@@ -1,0 +1,95 @@
+package sp.para.models;
+
+import android.app.Activity;
+import android.content.Context;
+import android.content.res.Resources;
+import android.os.Environment;
+import android.util.Log;
+
+import com.activeandroid.Model;
+import com.activeandroid.annotation.Column;
+import com.activeandroid.annotation.Table;
+import com.activeandroid.query.Select;
+import com.opencsv.CSVReader;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.List;
+
+import sp.para.R;
+
+@Table(name="stops")
+public class Stops extends Model {
+
+    private static double MIN_LAT = 14.668743;
+    private static double MAX_LAT = 14.751737;
+    private static double MIN_LON = 120.926378;
+    private static double MAX_LON = 121.024578;
+
+    @Column(name="stop_id")
+    public String stop_id;
+
+    @Column(name="name")
+    public String name;
+
+    @Column(name="lat")
+    public double lat;
+
+    @Column(name="lon")
+    public double lon;
+
+    public Stops(){}
+
+    public Stops(String stop_id, String name, double lat, double lon){
+        super();
+        this.stop_id = stop_id;
+        this.name = name;
+        this.lat = lat;
+        this.lon = lon;
+    }
+
+    public String getStopId(){
+        return this.stop_id;
+    }
+
+    public String getName(){
+        return this.name;
+    }
+
+    public double getLat(){
+        return this.lat;
+    }
+
+    public double getLon(){ return this.lon; }
+
+    public static List<Stops> list(){
+        return new Select()
+                .from(Stops.class)
+                .execute();
+    }
+
+    public static void populate(InputStream stopInStream){
+        try {
+            CSVReader reader = new CSVReader(new InputStreamReader(stopInStream),',', '"', 1);
+
+//            CSVReader reader = new CSVReader(new FileReader(new File(Environment.getExternalStorageDirectory(),"GTFS/stops.txt")),',', '"', 1);
+            String[] nextLine;
+            while ((nextLine = reader.readNext()) != null) {
+                double newLat = Double.parseDouble(nextLine[4]);
+                double newLon = Double.parseDouble(nextLine[5]);
+                if(Stops.MIN_LAT <= newLat && newLat <= Stops.MAX_LAT && Stops.MIN_LON <= newLon && newLon <= Stops.MAX_LON) {
+                    (new Stops(nextLine[0], nextLine[2], newLat, newLon)).save();
+                }
+            }
+        }
+        catch(Exception ex){
+            Log.d("-------------APP","Exception caught!");
+        }
+    }
+
+}
