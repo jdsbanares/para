@@ -6,6 +6,7 @@ import android.content.res.Resources;
 import android.os.Environment;
 import android.util.Log;
 
+import com.activeandroid.ActiveAndroid;
 import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
@@ -26,10 +27,10 @@ import sp.para.R;
 @Table(name="stops")
 public class Stops extends Model {
 
-    private static double MIN_LAT = 14.668743;
-    private static double MAX_LAT = 14.751737;
-    private static double MIN_LON = 120.926378;
-    private static double MAX_LON = 121.024578;
+    public static double MIN_LAT = 14.668743;
+    public static double MAX_LAT = 14.751737;
+    public static double MIN_LON = 120.926378;
+    public static double MAX_LON = 121.024578;
 
     @Column(name="stop_id")
     public String stop_id;
@@ -46,33 +47,62 @@ public class Stops extends Model {
     public Stops(){}
 
     public Stops(String stop_id, String name, double lat, double lon){
-        super();
+//        super();
         this.stop_id = stop_id;
         this.name = name;
         this.lat = lat;
         this.lon = lon;
     }
 
-    public String getStopId(){
+    public void setStopId(String stop_id) {
+        this.stop_id = stop_id;
+    }
+
+    public String getStopId() {
         return this.stop_id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getName(){
         return this.name;
     }
 
+    public void setLat(double lat) {
+        this.lat = lat;
+    }
+
     public double getLat(){
         return this.lat;
     }
 
-    public double getLon(){ return this.lon; }
+    public void setLon(double lon) {
+        this.lon = lon;
+    }
 
-    public static List<Stops> list(){
+    public double getLon() {
+        return this.lon;
+    }
+
+    public static List<Stops> getAll(){
         return new Select()
                 .from(Stops.class)
                 .execute();
     }
 
+    public static Stops getByStopId(String stop_id){
+        return new Select()
+                .from(Stops.class)
+                .where("stop_id = ?", stop_id)
+                .executeSingle();
+    }
+
+    public static Stops getRandom(){
+        return new Select().from(Stops.class).orderBy("RANDOM()").executeSingle();
+    }
+/*
     public static void populate(InputStream stopInStream){
         try {
             CSVReader reader = new CSVReader(new InputStreamReader(stopInStream),',', '"', 1);
@@ -83,13 +113,21 @@ public class Stops extends Model {
                 double newLat = Double.parseDouble(nextLine[4]);
                 double newLon = Double.parseDouble(nextLine[5]);
                 if(Stops.MIN_LAT <= newLat && newLat <= Stops.MAX_LAT && Stops.MIN_LON <= newLon && newLon <= Stops.MAX_LON) {
-                    (new Stops(nextLine[0], nextLine[2], newLat, newLon)).save();
+                    Log.d("------NEW","-----"+nextLine[2]+" -a-a- "+newLat+" --- "+newLon);
+                    Stops stop = new Stops();
+                    Log.d("------YAY", "Aaaaaaa");
+                    stop.setStopId(nextLine[0]);
+                    stop.setName(nextLine[2]);
+                    stop.setLat(newLat);
+                    stop.setLon(newLon);
+                    Log.d("-------------APP","NAME --> "+stop.getName());
+                    stop.save();
                 }
             }
         }
-        catch(Exception ex){
-            Log.d("-------------APP","Exception caught!");
+        catch(Exception ex) {
+            Log.d("-------------APP", "Exception caught!\n" + ex.getMessage());
         }
     }
-
+*/
 }
