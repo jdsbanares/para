@@ -44,7 +44,9 @@ public class Stops extends Model {
     @Column(name="lon")
     public double lon;
 
-    public Stops(){}
+    public Stops(){
+        super();
+    }
 
     public Stops(String stop_id, String name, double lat, double lon){
         super();
@@ -102,14 +104,25 @@ public class Stops extends Model {
     public static void populate(InputStream stopInStream) {
         try {
             CSVReader reader = new CSVReader(new InputStreamReader(stopInStream),',', '"', 1);
-
+            Stops checker;
             String[] nextLine;
             while ((nextLine = reader.readNext()) != null) {
                 double newLat = Double.parseDouble(nextLine[4]);
                 double newLon = Double.parseDouble(nextLine[5]);
+
                 if(Stops.MIN_LAT <= newLat && newLat <= Stops.MAX_LAT && Stops.MIN_LON <= newLon && newLon <= Stops.MAX_LON) {
-                    Stops stop = new Stops(nextLine[0],nextLine[2],newLat,newLon);
-                    stop.save();
+                    checker = getByStopId(nextLine[0]);
+
+                    if(checker != null) {
+                        checker.setName(nextLine[2]);
+                        checker.setLat(newLat);
+                        checker.setLon(newLon);
+                        checker.save();
+                    }
+                    else {
+                        Stops stop = new Stops(nextLine[0],nextLine[2],newLat,newLon);
+                        stop.save();
+                    }
                 }
             }
         }
