@@ -43,14 +43,14 @@ public class MainActivity extends Activity {
         GeoPoint startPoint = new GeoPoint(14.69161, 120.96928);
         mapController.setCenter(startPoint);
 
-        Marker startMarker = new Marker(map);
-        startMarker.setPosition(startPoint);
-        startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+//        Marker startMarker = new Marker(map);
+//        startMarker.setPosition(startPoint);
+//        startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
         //startMarker.setIcon(getResources().getDrawable(R.drawable.ic_launcher));
-        startMarker.setTitle("Start point");
+//        startMarker.setTitle("Start point");
 
-        map.getOverlays().add(startMarker);
-        map.invalidate();
+//        map.getOverlays().add(startMarker);
+//        map.invalidate();
 
 //        RoadManager roadManager = new OSRMRoadManager();
 //
@@ -67,18 +67,17 @@ public class MainActivity extends Activity {
 
 //        map.invalidate();
 
+        // Population of Stops
         Stops.populate(getResources().openRawResource(R.raw.stops));
 
-        Log.d("---------------APP", "HELLOOOOO!");
-
-        Log.d("--------------APP", "Size: --------------- "+Stops.getAll().size());
-//        for(Stops currStop: Stops.list()){
-//            Marker stopMarker = new Marker(map);
-//            stopMarker.setPosition(new GeoPoint(currStop.getLat(), currStop.getLon()));
-//            stopMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
-//            map.getOverlays().add(stopMarker);
-//        }
-//        map.invalidate();
+        // Place marker on each stop
+        for(Stops currStop: Stops.getAll()){
+            Marker stopMarker = new Marker(map);
+            stopMarker.setPosition(new GeoPoint(currStop.getLat(), currStop.getLon()));
+            stopMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+            map.getOverlays().add(stopMarker);
+        }
+        map.invalidate();
     }
 
 }
