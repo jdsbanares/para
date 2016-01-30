@@ -1,4 +1,4 @@
-package sp.para;
+package sp.para.activities;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 
+import sp.para.R;
 import sp.para.models.*;
 
 public class MainActivity extends Activity {
@@ -66,11 +67,11 @@ public class MainActivity extends Activity {
 
 //        map.invalidate();
 
-        populate();
+        Stops.populate(getResources().openRawResource(R.raw.stops));
 
         Log.d("---------------APP", "HELLOOOOO!");
 
-        Log.d("--------------APP", "Size: --------------- "+Stops.getRandom().getName());
+        Log.d("--------------APP", "Size: --------------- "+Stops.getAll().size());
 //        for(Stops currStop: Stops.list()){
 //            Marker stopMarker = new Marker(map);
 //            stopMarker.setPosition(new GeoPoint(currStop.getLat(), currStop.getLon()));
@@ -80,30 +81,4 @@ public class MainActivity extends Activity {
 //        map.invalidate();
     }
 
-    private void populate() {
-        try {
-            CSVReader reader = new CSVReader(new InputStreamReader(getResources().openRawResource(R.raw.stops)),',', '"', 1);
-
-//            CSVReader reader = new CSVReader(new FileReader(new File(Environment.getExternalStorageDirectory(),"GTFS/stops.txt")),',', '"', 1);
-            String[] nextLine;
-            while ((nextLine = reader.readNext()) != null) {
-                double newLat = Double.parseDouble(nextLine[4]);
-                double newLon = Double.parseDouble(nextLine[5]);
-                if(Stops.MIN_LAT <= newLat && newLat <= Stops.MAX_LAT && Stops.MIN_LON <= newLon && newLon <= Stops.MAX_LON) {
-                    Log.d("------NEW","-----"+nextLine[2]+" -a-a- "+newLat+" --- "+newLon);
-                    Stops stop = new Stops();
-                    Log.d("------YAY", "Aaaaaaa");
-                    stop.setStopId(nextLine[0]);
-                    stop.setName(nextLine[2]);
-                    stop.setLat(newLat);
-                    stop.setLon(newLon);
-                    Log.d("-------------APP","NAME --> "+stop.getName());
-                    stop.save();
-                }
-            }
-        }
-        catch(Exception ex) {
-            Log.d("-------------APP", "Exception caught!\n" + ex.getLocalizedMessage());
-        }
-    }
 }

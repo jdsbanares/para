@@ -27,10 +27,10 @@ import sp.para.R;
 @Table(name="stops")
 public class Stops extends Model {
 
-    public static double MIN_LAT = 14.668743;
-    public static double MAX_LAT = 14.751737;
-    public static double MIN_LON = 120.926378;
-    public static double MAX_LON = 121.024578;
+    private static double MIN_LAT = 14.668743;
+    private static double MAX_LAT = 14.751737;
+    private static double MIN_LON = 120.926378;
+    private static double MAX_LON = 121.024578;
 
     @Column(name="stop_id")
     public String stop_id;
@@ -47,7 +47,7 @@ public class Stops extends Model {
     public Stops(){}
 
     public Stops(String stop_id, String name, double lat, double lon){
-//        super();
+        super();
         this.stop_id = stop_id;
         this.name = name;
         this.lat = lat;
@@ -99,35 +99,22 @@ public class Stops extends Model {
                 .executeSingle();
     }
 
-    public static Stops getRandom(){
-        return new Select().from(Stops.class).orderBy("RANDOM()").executeSingle();
-    }
-/*
-    public static void populate(InputStream stopInStream){
+    public static void populate(InputStream stopInStream) {
         try {
             CSVReader reader = new CSVReader(new InputStreamReader(stopInStream),',', '"', 1);
 
-//            CSVReader reader = new CSVReader(new FileReader(new File(Environment.getExternalStorageDirectory(),"GTFS/stops.txt")),',', '"', 1);
             String[] nextLine;
             while ((nextLine = reader.readNext()) != null) {
                 double newLat = Double.parseDouble(nextLine[4]);
                 double newLon = Double.parseDouble(nextLine[5]);
                 if(Stops.MIN_LAT <= newLat && newLat <= Stops.MAX_LAT && Stops.MIN_LON <= newLon && newLon <= Stops.MAX_LON) {
-                    Log.d("------NEW","-----"+nextLine[2]+" -a-a- "+newLat+" --- "+newLon);
-                    Stops stop = new Stops();
-                    Log.d("------YAY", "Aaaaaaa");
-                    stop.setStopId(nextLine[0]);
-                    stop.setName(nextLine[2]);
-                    stop.setLat(newLat);
-                    stop.setLon(newLon);
-                    Log.d("-------------APP","NAME --> "+stop.getName());
+                    Stops stop = new Stops(nextLine[0],nextLine[2],newLat,newLon);
                     stop.save();
                 }
             }
         }
         catch(Exception ex) {
-            Log.d("-------------APP", "Exception caught!\n" + ex.getMessage());
+            Log.d("-------------APP", "Exception caught!\n" + ex);
         }
     }
-*/
 }
