@@ -1,28 +1,16 @@
 package sp.para.models;
 
-import android.app.Activity;
-import android.content.Context;
-import android.content.res.Resources;
-import android.os.Environment;
 import android.util.Log;
 
-import com.activeandroid.ActiveAndroid;
 import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
 import com.activeandroid.query.Select;
 import com.opencsv.CSVReader;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.Arrays;
 import java.util.List;
-
-import sp.para.R;
 
 @Table(name="stops")
 public class Stops extends Model {
@@ -33,16 +21,16 @@ public class Stops extends Model {
     private static double MAX_LON = 121.024578;
 
     @Column(name="stop_id")
-    public String stop_id;
+    private String stop_id;
 
     @Column(name="name")
-    public String name;
+    private String name;
 
     @Column(name="lat")
-    public double lat;
+    private double lat;
 
     @Column(name="lon")
-    public double lon;
+    private double lon;
 
     public Stops(){
         super();
