@@ -2,6 +2,7 @@ package sp.para.models;
 
 import android.util.Log;
 
+import com.activeandroid.ActiveAndroid;
 import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
@@ -59,6 +60,7 @@ public class Route extends Model {
     }
 
     public static void populate(InputStream routeInStream) {
+        ActiveAndroid.beginTransaction();
         try {
             CSVReader reader = new CSVReader(new InputStreamReader(routeInStream),',', '"', 1);
             Route checker;
@@ -77,9 +79,13 @@ public class Route extends Model {
                     route.save();
                 }
             }
+            ActiveAndroid.setTransactionSuccessful();
         }
         catch(Exception ex) {
             Log.d("-------------APP", "Exception caught!\n" + ex);
+        }
+        finally {
+            ActiveAndroid.endTransaction();
         }
     }
 

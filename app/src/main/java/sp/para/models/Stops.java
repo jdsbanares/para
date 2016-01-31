@@ -2,6 +2,7 @@ package sp.para.models;
 
 import android.util.Log;
 
+import com.activeandroid.ActiveAndroid;
 import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
@@ -90,6 +91,7 @@ public class Stops extends Model {
     }
 
     public static void populate(InputStream stopInStream) {
+        ActiveAndroid.beginTransaction();
         try {
             CSVReader reader = new CSVReader(new InputStreamReader(stopInStream),',', '"', 1);
             Stops checker;
@@ -113,9 +115,13 @@ public class Stops extends Model {
                     }
                 }
             }
+            ActiveAndroid.setTransactionSuccessful();
         }
         catch(Exception ex) {
             Log.d("-------------APP", "Exception caught!\n" + ex);
+        }
+        finally {
+            ActiveAndroid.endTransaction();
         }
     }
 }

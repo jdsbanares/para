@@ -2,6 +2,7 @@ package sp.para.models;
 
 import android.util.Log;
 
+import com.activeandroid.ActiveAndroid;
 import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
@@ -59,6 +60,7 @@ public class Trip extends Model {
     }
 
     public static void populate(InputStream tripInStream) {
+        ActiveAndroid.beginTransaction();
         try {
             CSVReader reader = new CSVReader(new InputStreamReader(tripInStream),',', '"', 1);
             Trip checker;
@@ -76,9 +78,13 @@ public class Trip extends Model {
                     trip.save();
                 }
             }
+            ActiveAndroid.setTransactionSuccessful();
         }
         catch(Exception ex) {
             Log.d("-------------APP", "Exception caught!\n" + ex);
+        }
+        finally {
+            ActiveAndroid.endTransaction();
         }
     }
 
