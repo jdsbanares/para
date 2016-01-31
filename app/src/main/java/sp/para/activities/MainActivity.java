@@ -70,7 +70,12 @@ public class MainActivity extends Activity {
         // Population of Stops
         Stops.populate(getResources().openRawResource(R.raw.stops));
 
+//        Route.populate(getResources().openRawResource(R.raw.routes));
+
+//        Log.d("-------------APP", "Route size = "+Route.getAll().size());
+
         // Place marker on each stop
+        /*
         for(Stops currStop: Stops.getAll()){
             Marker stopMarker = new Marker(map);
             stopMarker.setPosition(new GeoPoint(currStop.getLat(), currStop.getLon()));
@@ -78,6 +83,7 @@ public class MainActivity extends Activity {
             map.getOverlays().add(stopMarker);
         }
         map.invalidate();
+        */
     }
 
 }
