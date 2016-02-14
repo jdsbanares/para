@@ -16,14 +16,14 @@ import java.util.List;
 @Table(name="stop_time")
 public class StopTime extends Model {
 
+    @Column(name="sequence")
+    private int sequence;
+
     @Column(name="trip")
     private Trip trip;
 
     @Column(name="stop")
     private Stops stop;
-
-    @Column(name="sequence")
-    private int sequence;
 
     public StopTime() { super(); }
 
@@ -68,6 +68,7 @@ public class StopTime extends Model {
         return new Select()
                 .from(StopTime.class)
                 .where("trip = ?", trip.getId())
+                .orderBy("sequence asc")
                 .execute();
     }
 
@@ -81,8 +82,7 @@ public class StopTime extends Model {
     public static StopTime getByTripAndStops(Trip trip, Stops stop) {
         return new Select()
                 .from(StopTime.class)
-                .where("trip = ?", trip.getId())
-                .where("stop = ?", stop.getId())
+                .where("trip = ? and stop = ?", trip.getId(), stop.getId())
                 .executeSingle();
     }
 
@@ -96,27 +96,29 @@ public class StopTime extends Model {
             String[] nextLine;
             while ((nextLine = reader.readNext()) != null) {
                 stopChecker = Stops.getByStopId(nextLine[2]);
-                tripChecker = Trip.getByTripId(nextLine[0]);
 
-                if(stopChecker != null && tripChecker != null) {
-                    checker = getByTripAndStops(tripChecker, stopChecker);
+                if(stopChecker != null) {
+                    tripChecker = Trip.getByTripId(nextLine[0]);
+                    if(tripChecker != null) {
+                        checker = getByTripAndStops(tripChecker, stopChecker);
 
-                    if(checker != null) {
-                        checker.setTrip(tripChecker);
-                        checker.setStop(stopChecker);
-                        checker.setSequence(Integer.parseInt(nextLine[1]));
-                        checker.save();
-                    }
-                    else {
-                        StopTime stopTime = new StopTime(tripChecker,stopChecker, Integer.parseInt(nextLine[1]));
-                        stopTime.save();
+                        if(checker != null) {
+                            checker.setTrip(tripChecker);
+                            checker.setStop(stopChecker);
+                            checker.setSequence(Integer.parseInt(nextLine[1]));
+                            checker.save();
+                        }
+                        else {
+                            StopTime stopTime = new StopTime(tripChecker, stopChecker, Integer.parseInt(nextLine[1]));
+                            stopTime.save();
+                        }
                     }
                 }
             }
             ActiveAndroid.setTransactionSuccessful();
         }
         catch(Exception ex) {
-            Log.d("-------------APP", "Exception caught!\n" + ex);
+            Log.d("-------------StopTime", "Exception caught!", ex);
         }
         finally {
             ActiveAndroid.endTransaction();

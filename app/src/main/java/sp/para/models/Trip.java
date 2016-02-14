@@ -81,7 +81,7 @@ public class Trip extends Model {
             ActiveAndroid.setTransactionSuccessful();
         }
         catch(Exception ex) {
-            Log.d("-------------APP", "Exception caught!\n" + ex);
+            Log.d("-------------Trip", "Exception caught!\n" + ex);
         }
         finally {
             ActiveAndroid.endTransaction();

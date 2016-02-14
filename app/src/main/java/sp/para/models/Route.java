@@ -82,7 +82,7 @@ public class Route extends Model {
             ActiveAndroid.setTransactionSuccessful();
         }
         catch(Exception ex) {
-            Log.d("-------------APP", "Exception caught!\n" + ex);
+            Log.d("-------------Route", "Exception caught!\n" + ex);
         }
         finally {
             ActiveAndroid.endTransaction();
