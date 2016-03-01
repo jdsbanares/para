@@ -1,12 +1,13 @@
-package sp.para.activities;
+package sp.para.fragments;
 
-import android.app.Activity;
+import android.app.Fragment;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
-import com.opencsv.CSVReader;
-
+import org.osmdroid.ResourceProxy;
 import org.osmdroid.api.IMapController;
 import org.osmdroid.bonuspack.overlays.Polyline;
 import org.osmdroid.bonuspack.routing.OSRMRoadManager;
@@ -14,26 +15,27 @@ import org.osmdroid.bonuspack.routing.Road;
 import org.osmdroid.bonuspack.routing.RoadManager;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
+import org.osmdroid.util.ResourceProxyImpl;
 import org.osmdroid.views.MapView;
 
-import org.osmdroid.bonuspack.overlays.Marker;
-
-import java.io.File;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
 import sp.para.R;
-import sp.para.models.*;
+import sp.para.models.Route;
+import sp.para.models.StopTime;
+import sp.para.models.Stops;
+import sp.para.models.Trip;
 
-public class MainActivity extends FragmentActivity {
+/**
+ * Created by Jd Banares on 3/1/2016.
+ */
+public class MapFragment extends Fragment {
+
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
-
-        /*
-        MapView map = (MapView) findViewById(R.id.map);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.map_fragment, container, false);
+        MapView map = (MapView) view.findViewById(R.id.map);
         map.setTileSource(TileSourceFactory.MAPNIK);
         map.setMaxZoomLevel(19);
 
@@ -70,10 +72,10 @@ public class MainActivity extends FragmentActivity {
         Log.d("-------------APP", "Stops size = " + Stops.getAll().size());
         Log.d("-------------APP", "Route size = " + Route.getAll().size());
         Log.d("-------------APP", "Trip size = " + Trip.getAll().size());
-        Log.d("-------------APP", "StopTime size = "+StopTime.getAll().size());
+        Log.d("-------------APP", "StopTime size = "+ StopTime.getAll().size());
 
         // Draw Lines
-
+/*
         RoadManager roadManager = new OSRMRoadManager();
 
         List<StopTime> stopTimeList = StopTime.getAllByTrip(Trip.getByTripId("724628"));
@@ -108,6 +110,8 @@ public class MainActivity extends FragmentActivity {
         }
         map.invalidate();
         */
+
+        return view;
     }
 
 }
