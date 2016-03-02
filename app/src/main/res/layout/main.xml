@@ -20,7 +20,8 @@
         android:background="@drawable/round_button"
         android:text="S"
         android:id="@+id/searchBtn"
-        android:layout_gravity="right|bottom" />
+        android:layout_gravity="right|bottom"
+        android:layout_margin="@dimen/abc_action_bar_default_padding_material" />
 
     <!--<EditText-->
         <!--android:layout_width="fill_parent"-->
