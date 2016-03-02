@@ -14,12 +14,20 @@
 
     </fragment>
 
-    <EditText
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/editText"
-        android:layout_gravity="center_horizontal"
-        android:inputType="text"
-        android:gravity="top" />
+    <Button
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="@drawable/round_button"
+        android:text="S"
+        android:id="@+id/searchBtn"
+        android:layout_gravity="right|bottom" />
+
+    <!--<EditText-->
+        <!--android:layout_width="fill_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:id="@+id/editText"-->
+        <!--android:layout_gravity="center_horizontal"-->
+        <!--android:inputType="text"-->
+        <!--android:gravity="top" />-->
 
 </FrameLayout>
