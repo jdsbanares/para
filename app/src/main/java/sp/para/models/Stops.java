@@ -77,6 +77,11 @@ public class Stops extends Model {
         return this.lon;
     }
 
+    @Override
+    public String toString() {
+        return this.name;
+    }
+
     public static List<Stops> getAll(){
         return new Select()
                 .from(Stops.class)
