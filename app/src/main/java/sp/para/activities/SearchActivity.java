@@ -10,10 +10,16 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import sp.para.R;
+import sp.para.models.StopTime;
 import sp.para.models.Stops;
+import sp.para.models.Trip;
 
 public class SearchActivity extends FragmentActivity {
 
@@ -61,6 +67,29 @@ public class SearchActivity extends FragmentActivity {
                 // TODO: Do A* search using origin and destination
                 Log.d("-------------APP", "ORIGIN SELECTED = " + origin.getLat());
                 Log.d("-------------APP", "DESTIN SELECTED = " + destination.getLat());
+
+                List<StopTime> originStopTimeList = StopTime.getAllByStops(origin);
+
+                Log.d("-------------APP", "ORIGIN ST SIZE = " + originStopTimeList.size());
+
+                for(StopTime st : originStopTimeList) {
+                    StopTime prev = st.getPrev();
+                    StopTime next = st.getNext();
+                    if(prev != null)
+                        Log.d("-------------APP", "ST PREV = " + prev.getStop().getName());
+                    if(next != null)
+                        Log.d("-------------APP", "ST NEXT = " + next.getStop().getName());
+                }
+
+
+//                List<Trip> originTripList = new ArrayList<Trip>();
+//                for(StopTime st : originStopTimeList) {
+//                    originTripList.add(st.getTrip());
+//                }
+//
+//                Set<Trip> uniqueTrips = new LinkedHashSet<Trip>(originTripList);
+//
+//                Log.d("-------------APP", "ORIGIN TRIP SIZE = " + uniqueTrips.size());
             }
         });
     }

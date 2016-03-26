@@ -58,6 +58,20 @@ public class StopTime extends Model {
         return this.sequence;
     }
 
+    public StopTime getNext() {
+        return new Select()
+                .from(StopTime.class)
+                .where("trip = ? and sequence = ?", this.getTrip().getId(), sequence+1)
+                .executeSingle();
+    }
+
+    public StopTime getPrev() {
+        return new Select()
+                .from(StopTime.class)
+                .where("trip = ? and sequence = ?", this.getTrip().getId(), sequence-1)
+                .executeSingle();
+    }
+
     public static List<StopTime> getAll(){
         return new Select()
                 .from(StopTime.class)
