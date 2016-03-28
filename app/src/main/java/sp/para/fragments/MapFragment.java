@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import sp.para.R;
+import sp.para.activities.MainActivity;
 import sp.para.models.Route;
 import sp.para.models.StopTime;
 import sp.para.models.Stops;
@@ -32,10 +33,12 @@ import sp.para.models.Trip;
  */
 public class MapFragment extends Fragment {
 
+    MapView map;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.map_fragment, container, false);
-        MapView map = (MapView) view.findViewById(R.id.map);
+        map = (MapView) view.findViewById(R.id.map);
         map.setTileSource(TileSourceFactory.MAPNIK);
         map.setMaxZoomLevel(19);
 
@@ -112,6 +115,14 @@ public class MapFragment extends Fragment {
         */
 
         return view;
+    }
+
+    public void showRoute(ArrayList<GeoPoint> waypoints) {
+        RoadManager roadManager = new OSRMRoadManager();
+        Road road = roadManager.getRoad(waypoints);
+        Polyline roadOverlay = RoadManager.buildRoadOverlay(road, getActivity());
+        map.getOverlays().add(roadOverlay);
+        map.invalidate();
     }
 
 }

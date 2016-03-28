@@ -1,5 +1,7 @@
 package sp.para.activities;
 
+import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -8,6 +10,8 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 
 import sp.para.R;
+import sp.para.fragments.MapFragment;
+import sp.para.fragments.SearchFragment;
 
 public class MainActivity extends FragmentActivity {
 
@@ -18,13 +22,24 @@ public class MainActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
+        if(savedInstanceState == null) {
+            Fragment mapFragment = new MapFragment();
+            FragmentTransaction ft = getFragmentManager().beginTransaction();
+            ft.replace(R.id.frag_placeholder, mapFragment, "map_frag").commit();
+        }
+
         searchBtn = (Button) findViewById(R.id.searchBtn);
 
         searchBtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getBaseContext(), SearchActivity.class);
-                startActivity(intent);
+                Fragment searchFragment = new SearchFragment();
+                FragmentTransaction ft = getFragmentManager().beginTransaction();
+                ft.replace(R.id.main_activity, searchFragment, "search_frag");
+                ft.addToBackStack(null);
+                ft.commit();
+//                Intent intent = new Intent(getBaseContext(), SearchActivity.class);
+//                startActivity(intent);
             }
         });
 
