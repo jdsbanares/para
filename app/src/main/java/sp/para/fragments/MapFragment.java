@@ -9,10 +9,12 @@ import android.view.ViewGroup;
 
 import org.osmdroid.ResourceProxy;
 import org.osmdroid.api.IMapController;
+import org.osmdroid.bonuspack.overlays.Marker;
 import org.osmdroid.bonuspack.overlays.Polyline;
 import org.osmdroid.bonuspack.routing.OSRMRoadManager;
 import org.osmdroid.bonuspack.routing.Road;
 import org.osmdroid.bonuspack.routing.RoadManager;
+import org.osmdroid.bonuspack.routing.RoadNode;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.util.ResourceProxyImpl;
@@ -120,8 +122,20 @@ public class MapFragment extends Fragment {
     public void showRoute(ArrayList<GeoPoint> waypoints) {
         RoadManager roadManager = new OSRMRoadManager();
         Road road = roadManager.getRoad(waypoints);
-        Polyline roadOverlay = RoadManager.buildRoadOverlay(road, getActivity());
-        map.getOverlays().add(roadOverlay);
+
+        Log.d("-------------APP", "Road size = "+ road);
+
+        for (int i=0; i<road.mNodes.size(); i++){
+            RoadNode node = road.mNodes.get(i);
+            Marker nodeMarker = new Marker(map);
+            nodeMarker.setPosition(node.mLocation);
+            nodeMarker.setIcon(getResources().getDrawable(R.drawable.bonuspack_bubble));
+            nodeMarker.setTitle("Step "+i);
+            map.getOverlays().add(nodeMarker);
+        }
+
+//        Polyline roadOverlay = RoadManager.buildRoadOverlay(road, getActivity());
+//        map.getOverlays().add(roadOverlay);
         map.invalidate();
     }
 

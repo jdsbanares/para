@@ -68,7 +68,6 @@ public class SearchFragment extends Fragment {
                 waypoints.add(new GeoPoint(destination.getLat(), destination.getLon()));
 
                 MapFragment mf = (MapFragment) getFragmentManager().findFragmentByTag("map_frag");
-                Log.d("-------------APP", "ORIGIN SELECTED = " + mf);
                 mf.showRoute(waypoints);
                 /*
                 Log.d("-------------APP", "ORIGIN SELECTED = " + origin.getLat());
