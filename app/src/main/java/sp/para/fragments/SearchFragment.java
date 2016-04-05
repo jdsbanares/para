@@ -64,8 +64,12 @@ public class SearchFragment extends Fragment {
             public void onClick(View v) {
                 // TODO: Do A* search_fragment using origin and destination
                 ArrayList<GeoPoint> waypoints = new ArrayList<GeoPoint>();
-                waypoints.add(new GeoPoint(origin.getLat(), origin.getLon()));
-                waypoints.add(new GeoPoint(destination.getLat(), destination.getLon()));
+                GeoPoint orig = new GeoPoint(origin.getLat(), origin.getLon());
+                GeoPoint dest = new GeoPoint(destination.getLat(), destination.getLon());
+                waypoints.add(orig);
+                waypoints.add(dest);
+
+                Log.d("-------------APP", "DISTANCE = " + orig.distanceTo(dest));
 
                 MapFragment mf = (MapFragment) getFragmentManager().findFragmentByTag("map_frag");
                 mf.showRoute(waypoints);
