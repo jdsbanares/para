@@ -62,15 +62,22 @@ public class SearchFragment extends Fragment {
         findRouteBtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: Do A* search_fragment using origin and destination
                 ArrayList<GeoPoint> waypoints = new ArrayList<GeoPoint>();
                 GeoPoint orig = new GeoPoint(origin.getLat(), origin.getLon());
                 GeoPoint dest = new GeoPoint(destination.getLat(), destination.getLon());
-                waypoints.add(orig);
-                waypoints.add(dest);
 
                 Log.d("-------------APP", "DISTANCE = " + orig.distanceTo(dest));
 
+                // TODO: Do A* search_fragment using origin and destination
+                ArrayList<Stops> openList = new ArrayList<Stops>();
+                ArrayList<Stops> closedList = new ArrayList<Stops>();
+
+                openList.add(origin);
+
+                // Note: Find way to get previous Stop from current Stop
+
+                waypoints.add(orig);
+                waypoints.add(dest);
                 MapFragment mf = (MapFragment) getFragmentManager().findFragmentByTag("map_frag");
                 mf.showRoute(waypoints);
                 /*
