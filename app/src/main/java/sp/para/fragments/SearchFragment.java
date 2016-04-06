@@ -19,6 +19,7 @@ import java.util.List;
 
 import sp.para.R;
 import sp.para.models.Stops;
+import sp.para.models.StopsNode;
 
 public class SearchFragment extends Fragment {
 
@@ -69,10 +70,29 @@ public class SearchFragment extends Fragment {
                 Log.d("-------------APP", "DISTANCE = " + orig.distanceTo(dest));
 
                 // TODO: Do A* search_fragment using origin and destination
-                ArrayList<Stops> openList = new ArrayList<Stops>();
-                ArrayList<Stops> closedList = new ArrayList<Stops>();
+                ArrayList<StopsNode> openList = new ArrayList<StopsNode>();
+                ArrayList<StopsNode> closedList = new ArrayList<StopsNode>();
+                ArrayList<StopsNode> successors = new ArrayList<StopsNode>();
 
-                openList.add(origin);
+                openList.add(new StopsNode(origin, orig.distanceTo(dest), 0, null));
+
+                while(!openList.isEmpty()) {
+                    StopsNode node;
+                    node = openList.get(0);
+
+                    // Remove node from openList
+                    openList.remove(0);
+                    // Transfer node to closedList
+                    closedList.add(node);
+
+                    // Check if distance of node is zero
+                    // If zero, break the while loop (Solution found)
+                    // Else, proceed to the loop body
+                    if(node.getDistance() == 0)
+                        break;
+
+                    // Generate successor/s
+                }
 
                 // Note: Find way to get previous Stop from current Stop
 
