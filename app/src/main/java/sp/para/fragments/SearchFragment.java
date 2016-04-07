@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import sp.para.R;
+import sp.para.models.StopTime;
 import sp.para.models.Stops;
 import sp.para.models.StopsNode;
 
@@ -67,8 +68,6 @@ public class SearchFragment extends Fragment {
                 GeoPoint orig = new GeoPoint(origin.getLat(), origin.getLon());
                 GeoPoint dest = new GeoPoint(destination.getLat(), destination.getLon());
 
-                Log.d("-------------APP", "DISTANCE = " + orig.distanceTo(dest));
-
                 // TODO: Do A* search_fragment using origin and destination
                 ArrayList<StopsNode> openList = new ArrayList<StopsNode>();
                 ArrayList<StopsNode> closedList = new ArrayList<StopsNode>();
@@ -76,9 +75,17 @@ public class SearchFragment extends Fragment {
 
                 openList.add(new StopsNode(origin, orig.distanceTo(dest), 0, null));
 
+                int iter = 0;
+
                 while(!openList.isEmpty()) {
+
+                    Log.d("-------------APP", "Iter SIZE = " + iter++);
+
                     StopsNode node;
                     node = openList.get(0);
+
+                    Log.d("-------------APP", "Node name = " + node.getStop().getName());
+                    Log.d("-------------APP", "Node distance = " + node.getHeuristic());
 
                     // Remove node from openList
                     openList.remove(0);
@@ -88,10 +95,60 @@ public class SearchFragment extends Fragment {
                     // Check if distance of node is zero
                     // If zero, break the while loop (Solution found)
                     // Else, proceed to the loop body
-                    if(node.getDistance() == 0)
+                    if(node.getDistance() == 0) {
+                        Log.d("-------------APP", "SUCCESSOR SIZE = " + node.getStop().getName());
                         break;
+                    }
+
+                    GeoPoint nodePoint = new GeoPoint(node.getStop().getLat(), node.getStop().getLon());
 
                     // Generate successor/s
+                    for(StopTime st: StopTime.getAllByStops(origin)) {
+                        StopTime prev = st.getPrev();
+                        StopTime next = st.getNext();
+
+                        if(prev != null) {
+                            Stops prevStop = prev.getStop();
+                            GeoPoint prevPoint = new GeoPoint(prevStop.getLat(), prevStop.getLon());
+                            Log.d("-------------APP", "Dist to dest = " + prevPoint.distanceTo(dest));
+                            successors.add(new StopsNode(prev.getStop(), prevPoint.distanceTo(dest), node.getCost() + nodePoint.distanceTo(prevPoint), node));
+                        }
+
+                        if(next != null) {
+                            Stops nextStop = next.getStop();
+                            GeoPoint nextPoint = new GeoPoint(nextStop.getLat(), nextStop.getLon());
+                            Log.d("-------------APP", "Dist to dest = " + nextPoint.distanceTo(dest));
+                            successors.add(new StopsNode(next.getStop(), nextPoint.distanceTo(dest), node.getCost() + nodePoint.distanceTo(nextPoint), node));
+                        }
+                    }
+
+                    int size = successors.size();
+
+                    for(int i = 0; i < size; i++) {
+
+                        int closedIndex = closedList.indexOf(successors.get(0));
+
+                        if (closedIndex >= 0) {
+                            if (closedList.get(closedIndex).getHeuristic() > successors.get(0).getHeuristic())
+                                insertNode(openList, successors.get(0));
+                            successors.remove(0);
+                            continue;
+                        }
+
+                        int openIndex = openList.indexOf(successors.get(0));
+
+                        if (openIndex >= 0) {
+                            if (openList.get(openIndex).getHeuristic() > successors.get(0).getHeuristic()) {
+                                openList.remove(openIndex);
+                                insertNode(openList, successors.get(0));
+                            }
+                            successors.remove(0);
+                            continue;
+                        }
+
+                        insertNode(openList, successors.get(0));
+                        successors.remove(0);
+                    }
                 }
 
                 // Note: Find way to get previous Stop from current Stop
@@ -127,6 +184,28 @@ public class SearchFragment extends Fragment {
 //                Set<Trip> uniqueTrips = new LinkedHashSet<Trip>(originTripList);
 //
 //                Log.d("-------------APP", "ORIGIN TRIP SIZE = " + uniqueTrips.size());
+            }
+
+            public void insertNode(List<StopsNode> stopsList, StopsNode node) {
+
+                if(stopsList.isEmpty())
+                    stopsList.add(node);
+                else if(stopsList.get(0).getHeuristic() > node.getHeuristic())
+                    stopsList.add(0,node);
+                else{
+                    int i;
+
+                    for(i = 1; i < stopsList.size(); i++){
+                        if(stopsList.get(i).getHeuristic() > node.getHeuristic()){
+                            stopsList.add(i,node);
+                            break;
+                        }
+                    }
+
+                    if(i == stopsList.size())
+                        stopsList.add(node);
+                }
+
             }
         });
         return view;

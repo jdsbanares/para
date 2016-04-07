@@ -32,4 +32,8 @@ public class StopsNode {
 
     public StopsNode getParent() { return this.parent; }
 
+    public int getHeuristic() {
+        return this.cost + this.distance;
+    }
+
 }
