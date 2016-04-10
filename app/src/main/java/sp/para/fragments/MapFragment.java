@@ -125,17 +125,17 @@ public class MapFragment extends Fragment {
 
         Log.d("-------------APP", "Road size = "+ road);
 
-        for (int i=0; i<road.mNodes.size(); i++){
-            RoadNode node = road.mNodes.get(i);
-            Marker nodeMarker = new Marker(map);
-            nodeMarker.setPosition(node.mLocation);
-            nodeMarker.setIcon(getResources().getDrawable(R.drawable.bonuspack_bubble));
-            nodeMarker.setTitle("Step "+i);
-            map.getOverlays().add(nodeMarker);
-        }
+//        for (int i=0; i<road.mNodes.size(); i++){
+//            RoadNode node = road.mNodes.get(i);
+//            Marker nodeMarker = new Marker(map);
+//            nodeMarker.setPosition(node.mLocation);
+//            nodeMarker.setIcon(getResources().getDrawable(R.drawable.bonuspack_bubble));
+//            nodeMarker.setTitle("Step "+i);
+//            map.getOverlays().add(nodeMarker);
+//        }
 
-//        Polyline roadOverlay = RoadManager.buildRoadOverlay(road, getActivity());
-//        map.getOverlays().add(roadOverlay);
+        Polyline roadOverlay = RoadManager.buildRoadOverlay(road, getActivity());
+        map.getOverlays().add(roadOverlay);
         map.invalidate();
     }
 

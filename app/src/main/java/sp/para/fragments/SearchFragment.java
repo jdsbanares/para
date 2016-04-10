@@ -14,6 +14,7 @@ import android.widget.Button;
 
 import org.osmdroid.util.GeoPoint;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -153,10 +154,20 @@ public class SearchFragment extends Fragment {
 
                 }
 
-                // Note: Find way to get previous Stop from current Stop
+                ArrayList<StopsNode> pathList = new ArrayList<StopsNode>();
+                StopsNode currNode = closedList.get(closedList.size() - 1);
 
-                waypoints.add(orig);
-                waypoints.add(dest);
+                while(currNode != null) {
+                    pathList.add(currNode);
+                    currNode = currNode.getParent();
+                }
+
+                Log.d("-------------APP", "PATH LIST = " + pathList.size());
+
+                for(StopsNode way: pathList) {
+                    waypoints.add(new GeoPoint(way.getStop().getLat(),way.getStop().getLon()));
+                }
+
                 MapFragment mf = (MapFragment) getFragmentManager().findFragmentByTag("map_frag");
                 mf.showRoute(waypoints);
                 /*
