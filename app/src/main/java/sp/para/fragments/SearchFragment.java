@@ -16,6 +16,7 @@ import org.osmdroid.util.GeoPoint;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import sp.para.R;
@@ -169,6 +170,7 @@ public class SearchFragment extends Fragment {
                 }
 
                 MapFragment mf = (MapFragment) getFragmentManager().findFragmentByTag("map_frag");
+                Collections.reverse(waypoints);
                 mf.showRoute(waypoints);
                 /*
                 Log.d("-------------APP", "ORIGIN SELECTED = " + origin.getLat());

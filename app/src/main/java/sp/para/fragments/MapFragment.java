@@ -1,6 +1,7 @@
 package sp.para.fragments;
 
 import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -42,7 +43,6 @@ public class MapFragment extends Fragment {
         View view = inflater.inflate(R.layout.map_fragment, container, false);
         map = (MapView) view.findViewById(R.id.map);
         map.setTileSource(TileSourceFactory.MAPNIK);
-        map.setMaxZoomLevel(19);
 
         // Zoom via pinch/expand
         map.setBuiltInZoomControls(true);
@@ -50,8 +50,7 @@ public class MapFragment extends Fragment {
 
         IMapController mapController = map.getController();
         mapController.setZoom(18);
-        GeoPoint startPoint = new GeoPoint(14.69161, 120.96928);
-        mapController.setCenter(startPoint);
+        mapController.setCenter(new GeoPoint(14.691719, 120.969944));
 
 //        Marker startMarker = new Marker(map);
 //        startMarker.setPosition(startPoint);
@@ -135,8 +134,12 @@ public class MapFragment extends Fragment {
 //        }
 
         Polyline roadOverlay = RoadManager.buildRoadOverlay(road, getActivity());
+        map.getOverlays().clear();
         map.getOverlays().add(roadOverlay);
+        map.getController().setCenter(waypoints.get(0));
         map.invalidate();
+
+        getFragmentManager().popBackStack();
     }
 
 }
