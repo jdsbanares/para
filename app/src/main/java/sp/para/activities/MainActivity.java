@@ -13,6 +13,7 @@ import android.widget.Button;
 import sp.para.R;
 import sp.para.fragments.MapFragment;
 import sp.para.fragments.SearchFragment;
+import sp.para.fragments.StepsFragment;
 
 public class MainActivity extends FragmentActivity {
 
@@ -41,7 +42,7 @@ public class MainActivity extends FragmentActivity {
                 Fragment searchFragment = new SearchFragment();
                 FragmentTransaction ft = getFragmentManager().beginTransaction();
                 ft.replace(R.id.main_activity, searchFragment, "search_frag");
-                ft.addToBackStack(null);
+                ft.addToBackStack("search_frag");
                 ft.commit();
 //                Intent intent = new Intent(getBaseContext(), SearchActivity.class);
 //                startActivity(intent);

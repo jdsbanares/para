@@ -6,4 +6,6 @@
     <string name="hello_world">Hello world!</string>
     <string name="origin">Origin</string>
     <string name="search_activity">Search</string>
+    <string name="from">From</string>
+    <string name="to">To</string>
 </resources>

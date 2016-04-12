@@ -66,7 +66,7 @@ public class SearchFragment extends Fragment {
         findRouteBtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                ArrayList<GeoPoint> waypoints = new ArrayList<GeoPoint>();
+                ArrayList<Stops> waypoints = new ArrayList<Stops>();
                 GeoPoint orig = new GeoPoint(origin.getLat(), origin.getLon());
                 GeoPoint dest = new GeoPoint(destination.getLat(), destination.getLon());
 
@@ -166,7 +166,7 @@ public class SearchFragment extends Fragment {
                 Log.d("-------------APP", "PATH LIST = " + pathList.size());
 
                 for(StopsNode way: pathList) {
-                    waypoints.add(new GeoPoint(way.getStop().getLat(),way.getStop().getLon()));
+                    waypoints.add(way.getStop());
                 }
 
                 MapFragment mf = (MapFragment) getFragmentManager().findFragmentByTag("map_frag");

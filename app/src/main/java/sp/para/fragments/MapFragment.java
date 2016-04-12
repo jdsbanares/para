@@ -118,9 +118,15 @@ public class MapFragment extends Fragment {
         return view;
     }
 
-    public void showRoute(ArrayList<GeoPoint> waypoints) {
+    public void showRoute(ArrayList<Stops> waypoints) {
+        ArrayList<GeoPoint> geopoints = new ArrayList<GeoPoint>();
+
+        for(Stops st : waypoints) {
+            geopoints.add(new GeoPoint(st.getLat(), st.getLon()));
+        }
+
         RoadManager roadManager = new OSRMRoadManager();
-        Road road = roadManager.getRoad(waypoints);
+        Road road = roadManager.getRoad(geopoints);
 
         Log.d("-------------APP", "Road size = "+ road);
 
@@ -136,10 +142,17 @@ public class MapFragment extends Fragment {
         Polyline roadOverlay = RoadManager.buildRoadOverlay(road, getActivity());
         map.getOverlays().clear();
         map.getOverlays().add(roadOverlay);
-        map.getController().setCenter(waypoints.get(0));
+        map.getController().setCenter(geopoints.get(0));
         map.invalidate();
 
         getFragmentManager().popBackStack();
+
+        StepsFragment stepsFragment = StepsFragment.newInstance(waypoints.get(0), waypoints.get(waypoints.size() - 1));
+
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        ft.add(R.id.main_activity, stepsFragment, "steps_frag");
+        ft.addToBackStack("steps_frag");
+        ft.commit();
     }
 
 }
