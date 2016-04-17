@@ -73,10 +73,10 @@ public class MapFragment extends Fragment {
         // Population of StopTimes
 //        StopTime.populate(getResources().openRawResource(R.raw.stop_times));
 
-        Log.d("-------------APP", "Stops size = " + Stops.getAll().size());
-        Log.d("-------------APP", "Route size = " + Route.getAll().size());
-        Log.d("-------------APP", "Trip size = " + Trip.getAll().size());
-        Log.d("-------------APP", "StopTime size = "+ StopTime.getAll().size());
+//        Log.d("-------------APP", "Stops size = " + Stops.getAll().size());
+//        Log.d("-------------APP", "Route size = " + Route.getAll().size());
+//        Log.d("-------------APP", "Trip size = " + Trip.getAll().size());
+//        Log.d("-------------APP", "StopTime size = "+ StopTime.getAll().size());
 
         // Draw Lines
 /*

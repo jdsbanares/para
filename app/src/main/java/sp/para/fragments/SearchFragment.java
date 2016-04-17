@@ -20,9 +20,11 @@ import java.util.Collections;
 import java.util.List;
 
 import sp.para.R;
+import sp.para.models.Route;
 import sp.para.models.StopTime;
 import sp.para.models.Stops;
 import sp.para.models.StopsNode;
+import sp.para.models.Trip;
 
 public class SearchFragment extends Fragment {
 
@@ -35,6 +37,11 @@ public class SearchFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.search_fragment, container, false);
+
+//        Log.d("-------------APP", "Stops size = " + Stops.getAll().size());
+//        Log.d("-------------APP", "Route size = " + Route.getAll().size());
+//        Log.d("-------------APP", "Trip size = " + Trip.getAll().size());
+//        Log.d("-------------APP", "StopTime size = "+ StopTime.getAll().size());
 
         List<Stops> stopsList = Stops.getAll();
 

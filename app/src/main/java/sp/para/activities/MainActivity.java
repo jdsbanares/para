@@ -3,12 +3,20 @@ package sp.para.activities;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Intent;
+import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 import sp.para.R;
 import sp.para.fragments.MapFragment;
@@ -27,6 +35,8 @@ public class MainActivity extends FragmentActivity {
         StrictMode.setThreadPolicy(policy);
 
         setContentView(R.layout.main);
+
+        copyFiles();
 
         if(savedInstanceState == null) {
             Fragment mapFragment = new MapFragment();
@@ -125,6 +135,35 @@ public class MainActivity extends FragmentActivity {
         }
         map.invalidate();
         */
+    }
+
+    public void copyFiles() {
+        String mapFileName = "valenzuela_offline.zip";
+        String mapPath = "/sdcard/osmdroid/"+mapFileName;
+        String dbFileName = "Para.db";
+        String dbPath = "/data/data/sp.para/databases/Para.db";
+
+        Log.d("-------------APP", "COPYING FILES");
+
+        try {
+            AssetManager assetManager = getAssets();
+            InputStream in = assetManager.open(dbFileName);
+            OutputStream out = new FileOutputStream(dbPath);
+
+            byte[] buffer = new byte[1024];
+            int read;
+            while((read = in.read(buffer)) != -1){
+                out.write(buffer, 0, read);
+            }
+            in.close();
+            out.flush();
+            out.close();
+
+            Log.d("-------------APP", "COPIED FILES!!!!!");
+        }
+        catch(IOException ex){
+            Log.d("-------------APP", " -- "+ex.toString());
+        }
     }
 
 }
