@@ -138,8 +138,6 @@ public class MainActivity extends FragmentActivity {
     }
 
     public void copyFiles() {
-        String mapFileName = "valenzuela_offline.zip";
-        String mapPath = "/sdcard/osmdroid/"+mapFileName;
         String dbFileName = "Para.db";
         String dbPath = "/data/data/sp.para/databases/Para.db";
 

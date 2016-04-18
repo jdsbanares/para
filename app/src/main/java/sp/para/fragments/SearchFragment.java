@@ -38,7 +38,7 @@ public class SearchFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.search_fragment, container, false);
 
-//        Log.d("-------------APP", "Stops size = " + Stops.getAll().size());
+        Log.d("-------------APP", "Stops size = " + Stops.getAll().size());
 //        Log.d("-------------APP", "Route size = " + Route.getAll().size());
 //        Log.d("-------------APP", "Trip size = " + Trip.getAll().size());
 //        Log.d("-------------APP", "StopTime size = "+ StopTime.getAll().size());

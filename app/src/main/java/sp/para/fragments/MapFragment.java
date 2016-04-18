@@ -42,14 +42,17 @@ public class MapFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.map_fragment, container, false);
         map = (MapView) view.findViewById(R.id.map);
-        map.setTileSource(TileSourceFactory.MAPNIK);
+        map.setTileSource(TileSourceFactory.MAPQUESTOSM);
 
         // Zoom via pinch/expand
         map.setBuiltInZoomControls(true);
         map.setMultiTouchControls(true);
+        map.setMaxZoomLevel(17);
+        map.setMinZoomLevel(13);
+        map.setUseDataConnection(false);
 
         IMapController mapController = map.getController();
-        mapController.setZoom(18);
+        mapController.setZoom(17);
         mapController.setCenter(new GeoPoint(14.691719, 120.969944));
 
 //        Marker startMarker = new Marker(map);
