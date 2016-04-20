@@ -28,6 +28,14 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
     compile 'com.android.support:appcompat-v7:22.1.1'
+
+    compile 'com.graphhopper:graphhopper:0.6.0'
+    compile 'com.graphhopper:graphhopper-android:0.6.0'
+    compile 'org.mapsforge:mapsforge-core:0.6.0'
+    compile 'org.mapsforge:mapsforge-map:0.6.0'
+    compile 'org.mapsforge:mapsforge-map-android:0.6.0'
+    compile 'org.mapsforge:mapsforge-map-reader:0.6.0'
+
     compile files('libs/osmbonuspack_v5.0.jar')
     compile files('libs/commons-lang3-3.3.2.jar')
     compile files('libs/opencsv-3.5.jar')
