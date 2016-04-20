@@ -138,6 +138,8 @@ public class MainActivity extends FragmentActivity {
     }
 
     public void copyFiles() {
+        String mapFileName = "MapquestOSM.zip";
+        String mapPath = "/sdcard/osmdroid/MapquestOSM.zip";
         String dbFileName = "Para.db";
         String dbPath = "/data/data/sp.para/databases/Para.db";
 
@@ -145,11 +147,33 @@ public class MainActivity extends FragmentActivity {
 
         try {
             AssetManager assetManager = getAssets();
-            InputStream in = assetManager.open(dbFileName);
-            OutputStream out = new FileOutputStream(dbPath);
+            InputStream in = null;
+            OutputStream out = null;
+
+            in = assetManager.open(dbFileName);
+            out = new FileOutputStream(dbPath);
 
             byte[] buffer = new byte[1024];
             int read;
+            while((read = in.read(buffer)) != -1){
+                out.write(buffer, 0, read);
+            }
+            in.close();
+            out.flush();
+            out.close();
+
+            File osmDir = new File("/sdcard/osmdroid");
+
+            Log.d("-------------APP", "DIR EXISTS? -- "+osmDir.exists());
+
+            if(!osmDir.exists())
+                osmDir.mkdirs();
+
+            Log.d("-------------APP", "DIR EXISTS? -- "+osmDir.exists());
+
+            in = assetManager.open(mapFileName);
+            out = new FileOutputStream(mapPath);
+
             while((read = in.read(buffer)) != -1){
                 out.write(buffer, 0, read);
             }
