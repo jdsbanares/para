@@ -3,10 +3,13 @@ package sp.para.fragments;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.graphhopper.GraphHopper;
 
 import org.osmdroid.ResourceProxy;
 import org.osmdroid.api.IMapController;
@@ -21,6 +24,7 @@ import org.osmdroid.util.GeoPoint;
 import org.osmdroid.util.ResourceProxyImpl;
 import org.osmdroid.views.MapView;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -129,7 +133,17 @@ public class MapFragment extends Fragment {
         }
 
         RoadManager roadManager = new OSRMRoadManager();
+        GraphHopper hopper = new GraphHopper().forMobile();
         Road road = roadManager.getRoad(geopoints);
+
+        File path = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),"graphhopper/maps");
+        File phMaps = new File(path.getAbsolutePath(), "philippines-gh");
+
+        Log.d("-------------APP", "maps absolute "+ phMaps.getAbsolutePath());
+
+        hopper.load(phMaps.getAbsolutePath());
+
+        Log.d("-------------APP", "found graph " + hopper.getGraphHopperStorage().toString() + ", nodes:" + hopper.getGraphHopperStorage().getNodes());
 
         Log.d("-------------APP", "Road size = "+ road);
 
