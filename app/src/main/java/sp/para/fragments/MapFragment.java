@@ -2,6 +2,7 @@ package sp.para.fragments;
 
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
@@ -9,8 +10,24 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.graphhopper.GHRequest;
+import com.graphhopper.GHResponse;
 import com.graphhopper.GraphHopper;
+import com.graphhopper.routing.AlgorithmOptions;
 
+import org.mapsforge.core.model.MapPosition;
+import org.mapsforge.map.android.util.AndroidUtil;
+import org.mapsforge.map.android.view.MapView;
+//import org.mapsforge.map.layer.overlay.Polyline;
+
+import org.mapsforge.core.graphics.Paint;
+import org.mapsforge.core.graphics.Style;
+import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
+import org.mapsforge.map.datastore.MapDataStore;
+import org.mapsforge.map.layer.cache.TileCache;
+import org.mapsforge.map.layer.renderer.TileRendererLayer;
+import org.mapsforge.map.reader.MapFile;
+import org.mapsforge.map.rendertheme.InternalRenderTheme;
 import org.osmdroid.ResourceProxy;
 import org.osmdroid.api.IMapController;
 import org.osmdroid.bonuspack.overlays.Marker;
@@ -22,7 +39,7 @@ import org.osmdroid.bonuspack.routing.RoadNode;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.util.ResourceProxyImpl;
-import org.osmdroid.views.MapView;
+//import org.osmdroid.views.MapView;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -41,23 +58,43 @@ import sp.para.models.Trip;
 public class MapFragment extends Fragment {
 
     MapView map;
+    TileCache tileCache;
+    TileRendererLayer tileRendererLayer;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.map_fragment, container, false);
         map = (MapView) view.findViewById(R.id.map);
-        map.setTileSource(TileSourceFactory.MAPQUESTOSM);
 
         // Zoom via pinch/expand
+        map.setClickable(true);
         map.setBuiltInZoomControls(true);
-        map.setMultiTouchControls(true);
-        map.setMaxZoomLevel(17);
-        map.setMinZoomLevel(13);
-        map.setUseDataConnection(false);
 
-        IMapController mapController = map.getController();
-        mapController.setZoom(17);
-        mapController.setCenter(new GeoPoint(14.691719, 120.969944));
+        tileCache = AndroidUtil.createTileCache(getActivity().getBaseContext(), getClass().getSimpleName(), map.getModel().displayModel.getTileSize(),
+                1f, map.getModel().frameBufferModel.getOverdrawFactor());
+
+        File path = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),"graphhopper/maps/philippines-gh");
+        File phMaps = new File(path.getAbsolutePath(), "philippines.map");
+
+        MapDataStore mapDataStore = new MapFile(phMaps);
+
+        map.getLayerManager().getLayers().clear();
+
+        tileRendererLayer = new TileRendererLayer(tileCache, mapDataStore, map.getModel().mapViewPosition, false, true, AndroidGraphicFactory.INSTANCE);
+        tileRendererLayer.setTextScale(1.5f);
+        tileRendererLayer.setXmlRenderTheme(InternalRenderTheme.OSMARENDER);
+        map.getModel().mapViewPosition.setMapPosition(new MapPosition(mapDataStore.boundingBox().getCenterPoint(), (byte) 15));
+        map.getLayerManager().getLayers().add(tileRendererLayer);
+
+//        map.setTileSource(TileSourceFactory.MAPQUESTOSM);
+//        map.setMultiTouchControls(true);
+//        map.setMaxZoomLevel(17);
+//        map.setMinZoomLevel(13);
+//        map.setUseDataConnection(false);
+//
+//        IMapController mapController = map.getController();
+//        mapController.setZoom(17);
+//        mapController.setCenter(new GeoPoint(14.691719, 120.969944));
 
 //        Marker startMarker = new Marker(map);
 //        startMarker.setPosition(startPoint);
@@ -156,11 +193,32 @@ public class MapFragment extends Fragment {
 //            map.getOverlays().add(nodeMarker);
 //        }
 
-        Polyline roadOverlay = RoadManager.buildRoadOverlay(road, getActivity());
-        map.getOverlays().clear();
-        map.getOverlays().add(roadOverlay);
-        map.getController().setCenter(geopoints.get(0));
-        map.invalidate();
+        Paint paintStroke = AndroidGraphicFactory.INSTANCE.createPaint();
+        paintStroke.setStyle(Style.STROKE);
+        paintStroke.setColor(Color.argb(128, 0, 0xCC, 0x33));
+        paintStroke.setDashPathEffect(new float[]
+                {
+                        25, 15
+                });
+        paintStroke.setStrokeWidth(8);
+
+        map.getLayerManager().getLayers().clear();
+//        map.getOverlays().clear();
+
+        for(int i=0; i < geopoints.size() - 1; i++) {
+            GHRequest req = new GHRequest(geopoints.get(i).getLatitude(), geopoints.get(i).getLongitude(),
+                    geopoints.get(i+1).getLatitude(), geopoints.get(i+1).getLongitude())
+                    .setAlgorithm(AlgorithmOptions.ASTAR);
+            GHResponse resp = hopper.route(req);
+            org.mapsforge.map.layer.overlay.Polyline line = new org.mapsforge.map.layer.overlay.Polyline(paintStroke, AndroidGraphicFactory.INSTANCE);
+
+            map.getLayerManager().getLayers().add(line);
+        }
+
+//        Polyline roadOverlay = RoadManager.buildRoadOverlay(road, getActivity());
+//        map.getOverlays().add(roadOverlay);
+//        map.getController().setCenter(geopoints.get(0));
+//        map.invalidate();
 
         getFragmentManager().popBackStack();
 
