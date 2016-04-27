@@ -1,12 +1,14 @@
 package sp.para.fragments;
 
 import android.app.Fragment;
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -73,6 +75,9 @@ public class SearchFragment extends Fragment {
         findRouteBtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+                InputMethodManager inputManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                inputManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+
                 ArrayList<Stops> waypoints = new ArrayList<Stops>();
                 GeoPoint orig = new GeoPoint(origin.getLat(), origin.getLon());
                 GeoPoint dest = new GeoPoint(destination.getLat(), destination.getLon());
@@ -93,9 +98,9 @@ public class SearchFragment extends Fragment {
                     StopsNode node;
                     node = openList.get(0);
 
-                    Log.d("-------------APP", "Node name = " + node.getStop().getName());
-                    Log.d("-------------APP", "Node ID = " + node.getStop().getStopId());
-                    Log.d("-------------APP", "Node distance = " + node.getHeuristic());
+//                    Log.d("-------------APP", "Node name = " + node.getStop().getName());
+//                    Log.d("-------------APP", "Node ID = " + node.getStop().getStopId());
+//                    Log.d("-------------APP", "Node distance = " + node.getHeuristic());
 
                     // Remove node from openList
                     openList.remove(0);
@@ -106,7 +111,7 @@ public class SearchFragment extends Fragment {
                     // If zero, break the while loop (Solution found)
                     // Else, proceed to the loop body
                     if(node.getDistance() == 0) {
-                        Log.d("-------------APP", "FINAL STOP = " + node.getStop().getName());
+//                        Log.d("-------------APP", "FINAL STOP = " + node.getStop().getName());
                         break;
                     }
 
@@ -128,6 +133,11 @@ public class SearchFragment extends Fragment {
                             GeoPoint nextPoint = new GeoPoint(nextStop.getLat(), nextStop.getLon());
                             successors.add(new StopsNode(nextStop, nextPoint.distanceTo(dest), node.getCost() + nodePoint.distanceTo(nextPoint), node));
                         }
+                    }
+
+                    for(Stops st: Stops.getAllWithinDistance(node.getStop())) {
+                        GeoPoint stPoint = new GeoPoint(st.getLat(), st.getLon());
+                        successors.add(new StopsNode(st, stPoint.distanceTo(dest), node.getCost() + nodePoint.distanceTo(stPoint), node));
                     }
 
                     int size = successors.size();

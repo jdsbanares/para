@@ -9,8 +9,11 @@ import com.activeandroid.annotation.Table;
 import com.activeandroid.query.Select;
 import com.opencsv.CSVReader;
 
+import org.osmdroid.util.GeoPoint;
+
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.List;
 
 @Table(name="stops")
@@ -93,6 +96,17 @@ public class Stops extends Model {
                 .from(Stops.class)
                 .where("stop_id = ?", stop_id)
                 .executeSingle();
+    }
+
+    public static List<Stops> getAllWithinDistance(Stops arg) {
+        ArrayList<Stops> stopsList = new ArrayList<Stops>();
+        GeoPoint argPoint = new GeoPoint(arg.getLat(), arg.getLon());
+        for(Stops currStop: Stops.getAll()) {
+            GeoPoint currPoint = new GeoPoint(currStop.getLat(), currStop.getLon());
+            if(argPoint.distanceTo(currPoint) <= 500)
+                stopsList.add(currStop);
+        }
+        return stopsList;
     }
 
     public static void populate(InputStream stopInStream) {

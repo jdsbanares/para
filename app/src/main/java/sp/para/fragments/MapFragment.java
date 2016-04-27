@@ -151,7 +151,7 @@ public class MapFragment extends Fragment {
 //        map.invalidate();
 
         // Place marker on each stop
-        /*
+
         for(Stops currStop: Stops.getAll()){
             Marker stopMarker = new Marker(map);
             stopMarker.setPosition(new GeoPoint(currStop.getLat(), currStop.getLon()));
@@ -159,7 +159,6 @@ public class MapFragment extends Fragment {
             map.getOverlays().add(stopMarker);
         }
         map.invalidate();
-        */
 
         return view;
     }
@@ -170,7 +169,7 @@ public class MapFragment extends Fragment {
         File path = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),"graphhopper/maps");
         File phMaps = new File(path.getAbsolutePath(), "philippines-gh");
 
-        Log.d("-------------APP", "maps absolute "+ phMaps.getAbsolutePath());
+//        Log.d("-------------APP", "maps absolute "+ phMaps.getAbsolutePath());
 
         hopper.load(phMaps.getAbsolutePath());
 
@@ -211,15 +210,20 @@ public class MapFragment extends Fragment {
                     .setAlgorithm(AlgorithmOptions.ASTAR_BI);
             GHResponse resp = hopper.route(req);
 
-            PathWrapper pathResp = resp.getBest();
+            if(!resp.hasErrors()) {
+                PathWrapper pathResp = resp.getBest();
 
-            PointList tmp = pathResp.getPoints();
-            for(int j=0; j<pathResp.getPoints().getSize(); j++) {
-                geopoints.add(new GeoPoint(tmp.getLatitude(j), tmp.getLongitude(j)));
+                PointList tmp = pathResp.getPoints();
+                for (int j = 0; j < pathResp.getPoints().getSize(); j++) {
+                    geopoints.add(new GeoPoint(tmp.getLatitude(j), tmp.getLongitude(j)));
+                }
+            }
+            else {
+                for(Throwable error: resp.getErrors()) {
+                    Log.d("-------------APP", ""+error.getMessage());
+                }
             }
 
-//            org.mapsforge.map.layer.overlay.Polyline line = new org.mapsforge.map.layer.overlay.Polyline(paintStroke, AndroidGraphicFactory.INSTANCE);
-//            map.getLayerManager().getLayers().add(line);
         }
 
         RoadManager roadManager = new OSRMRoadManager();
