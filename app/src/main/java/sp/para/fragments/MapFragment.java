@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.graphhopper.GHRequest;
 import com.graphhopper.GHResponse;
@@ -59,6 +60,7 @@ import sp.para.models.Trip;
  */
 public class MapFragment extends Fragment {
 
+    Button searchBtn;
     MapView map;
     TileCache tileCache;
     TileRendererLayer tileRendererLayer;
@@ -160,6 +162,21 @@ public class MapFragment extends Fragment {
         }
         map.invalidate();
 
+        searchBtn = (Button) view.findViewById(R.id.searchBtn);
+
+        searchBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Fragment searchFragment = new SearchFragment();
+                FragmentTransaction ft = getFragmentManager().beginTransaction();
+                ft.replace(R.id.main_activity, searchFragment, "search_frag");
+                ft.addToBackStack("search_frag");
+                ft.commit();
+//                Intent intent = new Intent(getBaseContext(), SearchActivity.class);
+//                startActivity(intent);
+            }
+        });
+
         return view;
     }
 
@@ -208,10 +225,14 @@ public class MapFragment extends Fragment {
             GHRequest req = new GHRequest(waypoints.get(i).getLat(), waypoints.get(i).getLon(),
                     waypoints.get(i+1).getLat(), waypoints.get(i+1).getLon())
                     .setAlgorithm(AlgorithmOptions.ASTAR_BI);
+            req.getHints().put("instructions", "true");
+
             GHResponse resp = hopper.route(req);
 
             if(!resp.hasErrors()) {
                 PathWrapper pathResp = resp.getBest();
+
+                Log.d("-------------APP", "PATH INSTRUCTIONS "+pathResp.getInstructions().toString());
 
                 PointList tmp = pathResp.getPoints();
                 for (int j = 0; j < pathResp.getPoints().getSize(); j++) {
@@ -239,6 +260,7 @@ public class MapFragment extends Fragment {
         StepsFragment stepsFragment = StepsFragment.newInstance(waypoints.get(0), waypoints.get(waypoints.size() - 1));
 
         FragmentTransaction ft = getFragmentManager().beginTransaction();
+//        ft.remove(getFragmentManager().findFragmentByTag("steps_frag"));
         ft.add(R.id.main_activity, stepsFragment, "steps_frag");
         ft.addToBackStack("steps_frag");
         ft.commit();

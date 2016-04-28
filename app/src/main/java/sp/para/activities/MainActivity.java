@@ -25,8 +25,6 @@ import sp.para.fragments.StepsFragment;
 
 public class MainActivity extends FragmentActivity {
 
-    Button searchBtn;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,21 +41,6 @@ public class MainActivity extends FragmentActivity {
             FragmentTransaction ft = getFragmentManager().beginTransaction();
             ft.replace(R.id.frag_placeholder, mapFragment, "map_frag").commit();
         }
-
-        searchBtn = (Button) findViewById(R.id.searchBtn);
-
-        searchBtn.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Fragment searchFragment = new SearchFragment();
-                FragmentTransaction ft = getFragmentManager().beginTransaction();
-                ft.replace(R.id.main_activity, searchFragment, "search_frag");
-                ft.addToBackStack("search_frag");
-                ft.commit();
-//                Intent intent = new Intent(getBaseContext(), SearchActivity.class);
-//                startActivity(intent);
-            }
-        });
 
         /*
         MapView map = (MapView) findViewById(R.id.map);
