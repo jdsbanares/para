@@ -33,6 +33,7 @@ import java.io.File;
 import java.util.ArrayList;
 
 import sp.para.R;
+import sp.para.models.InstructionNode;
 import sp.para.models.Stops;
 import sp.para.models.StopsNode;
 
@@ -236,9 +237,33 @@ public class MapFragment extends Fragment {
         map.getController().setCenter(geopoints.get(0));
         map.invalidate();
 
+        ArrayList<InstructionNode> instList = new ArrayList<InstructionNode>();
+        InstructionNode startIns = null;
+        InstructionNode currIns = null;
+
         for(StopsNode way: waypoints) {
-            Log.d("-------------APP", "STOPS NAME = " + way.getStop().getName());
-            Log.d("-------------APP", "STOPS TRIP = " + way.getTime().getTrip().getRoute().getName());
+            if(startIns == null) {
+                startIns = new InstructionNode(way.getTime(), way.getTime(), null);
+                currIns = startIns;
+                instList.add(startIns);
+            }
+            else if(currIns.getEndStop().getTrip().getRoute().getRouteId().equals(way.getTime().getTrip().getRoute().getRouteId())) {
+                currIns.setEndStop(way.getTime());
+            }
+            else {
+                InstructionNode newIns = new InstructionNode(way.getTime(), way.getTime(), currIns);
+                instList.add(newIns);
+                currIns = newIns;
+            }
+        }
+
+        Log.d("-------------APP", "Instructions size -- "+instList.size());
+
+        for(InstructionNode inst: instList) {
+            Log.d("-------------APP", "*****************");
+            Log.d("-------------APP", ">> "+inst.getStartStop().getStop().getName());
+            Log.d("-------------APP", ">> "+inst.getEndStop().getStop().getName());
+            Log.d("-------------APP", ">> "+inst.getEndStop().getTrip().getRoute().getName());
         }
 
         getFragmentManager().popBackStack();
