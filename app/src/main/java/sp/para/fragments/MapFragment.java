@@ -34,6 +34,7 @@ import java.util.ArrayList;
 
 import sp.para.R;
 import sp.para.models.Stops;
+import sp.para.models.StopsNode;
 
 /**
  * Created by Jd Banares on 3/1/2016.
@@ -160,7 +161,7 @@ public class MapFragment extends Fragment {
         return view;
     }
 
-    public void showRoute(ArrayList<Stops> waypoints) {
+    public void showRoute(ArrayList<StopsNode> waypoints) {
         GraphHopper hopper = new GraphHopper().forMobile();
 
         File path = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),"graphhopper/maps");
@@ -202,8 +203,8 @@ public class MapFragment extends Fragment {
 //        }
 
         for(int i=0; i < waypoints.size() - 1; i++) {
-            GHRequest req = new GHRequest(waypoints.get(i).getLat(), waypoints.get(i).getLon(),
-                    waypoints.get(i+1).getLat(), waypoints.get(i+1).getLon())
+            GHRequest req = new GHRequest(waypoints.get(i).getStop().getLat(), waypoints.get(i).getStop().getLon(),
+                    waypoints.get(i+1).getStop().getLat(), waypoints.get(i+1).getStop().getLon())
                     .setAlgorithm(AlgorithmOptions.ASTAR_BI);
             req.getHints().put("instructions", "true");
 
@@ -235,9 +236,14 @@ public class MapFragment extends Fragment {
         map.getController().setCenter(geopoints.get(0));
         map.invalidate();
 
+        for(StopsNode way: waypoints) {
+            Log.d("-------------APP", "STOPS NAME = " + way.getStop().getName());
+            Log.d("-------------APP", "STOPS TRIP = " + way.getTime().getTrip().getRoute().getName());
+        }
+
         getFragmentManager().popBackStack();
 
-        StepsFragment stepsFragment = StepsFragment.newInstance(waypoints.get(0), waypoints.get(waypoints.size() - 1));
+        StepsFragment stepsFragment = StepsFragment.newInstance(waypoints.get(0).getStop(), waypoints.get(waypoints.size() - 1).getStop());
 
         FragmentTransaction ft = getFragmentManager().beginTransaction();
 //        ft.remove(getFragmentManager().findFragmentByTag("steps_frag"));

@@ -78,7 +78,7 @@ public class SearchFragment extends Fragment {
                 InputMethodManager inputManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                 inputManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
 
-                ArrayList<Stops> waypoints = new ArrayList<Stops>();
+                ArrayList<StopsNode> waypoints = new ArrayList<StopsNode>();
                 GeoPoint orig = new GeoPoint(origin.getLat(), origin.getLon());
                 GeoPoint dest = new GeoPoint(destination.getLat(), destination.getLon());
 
@@ -87,20 +87,23 @@ public class SearchFragment extends Fragment {
                 ArrayList<StopsNode> closedList = new ArrayList<StopsNode>();
                 ArrayList<StopsNode> successors = new ArrayList<StopsNode>();
 
-                openList.add(new StopsNode(orig.distanceTo(dest), 0, null, StopTime.getAllByStops(origin).get(0)));
+                ArrayList<StopTime> initialStops = (ArrayList) StopTime.getAllByStops(origin);
+
+                Log.d("-------------APP", "Initial SIZE = " + initialStops.size());
+
+//                for(StopTime st: initialStops) {
+                    openList.add(new StopsNode(orig.distanceTo(dest), 0, null, initialStops.get(0)));
+//                }
 
                 int iter = 0;
 
                 while(!openList.isEmpty()) {
 
-                    Log.d("-------------APP", "Iter SIZE = " + iter++);
-
                     StopsNode node;
                     node = openList.get(0);
 
-//                    Log.d("-------------APP", "Node name = " + node.getStop().getName());
-//                    Log.d("-------------APP", "Node ID = " + node.getStop().getStopId());
-//                    Log.d("-------------APP", "Node distance = " + node.getHeuristic());
+                    Log.d("-------------APP", "Iter SIZE = " + iter++);
+                    Log.d("-------------APP", "Curr Stop = " + node.getStop().getName());
 
                     // Remove node from openList
                     openList.remove(0);
@@ -111,7 +114,6 @@ public class SearchFragment extends Fragment {
                     // If zero, break the while loop (Solution found)
                     // Else, proceed to the loop body
                     if(node.getDistance() == 0) {
-//                        Log.d("-------------APP", "FINAL STOP = " + node.getStop().getName());
                         break;
                     }
 
@@ -119,8 +121,8 @@ public class SearchFragment extends Fragment {
 
                     // Generate successor/s
                     for(StopTime st: StopTime.getAllByStops(node.getStop())) {
-                        StopTime prev = st.getPrev();
-                        StopTime next = st.getNext();
+                        StopTime prev = node.getTime().getPrev();
+                        StopTime next = node.getTime().getNext();
 
                         if(prev != null) {
                             Stops prevStop = prev.getStop();
@@ -182,13 +184,13 @@ public class SearchFragment extends Fragment {
 
                 Log.d("-------------APP", "PATH LIST = " + pathList.size());
 
-                for(StopsNode way: pathList) {
-                    Log.d("-------------APP", "STOPS NAME = " + way.getStop().getName());
-                    Log.d("-------------APP", "STOPS TRIP = " + way.getTime().getTrip().getRoute().getName());
-                }
+//                for(StopsNode way: pathList) {
+//                    Log.d("-------------APP", "STOPS NAME = " + way.getStop().getName());
+//                    Log.d("-------------APP", "STOPS TRIP = " + way.getTime().getTrip().getRoute().getName());
+//                }
 
                 for(StopsNode way: pathList) {
-                    waypoints.add(way.getStop());
+                    waypoints.add(way);
                 }
 
                 MapFragment mf = (MapFragment) getFragmentManager().findFragmentByTag("map_frag");
