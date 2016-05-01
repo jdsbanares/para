@@ -2,7 +2,6 @@ package sp.para.fragments;
 
 import android.app.Fragment;
 import android.app.FragmentTransaction;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
@@ -18,42 +17,23 @@ import com.graphhopper.PathWrapper;
 import com.graphhopper.routing.AlgorithmOptions;
 import com.graphhopper.util.PointList;
 
-import org.mapsforge.core.model.MapPosition;
-import org.mapsforge.map.android.util.AndroidUtil;
-//import org.mapsforge.map.android.view.MapView;
-//import org.mapsforge.map.layer.overlay.Polyline;
-
-import org.mapsforge.core.graphics.Paint;
-import org.mapsforge.core.graphics.Style;
-import org.mapsforge.map.android.graphics.AndroidGraphicFactory;
-import org.mapsforge.map.datastore.MapDataStore;
 import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.layer.renderer.TileRendererLayer;
-import org.mapsforge.map.reader.MapFile;
-import org.mapsforge.map.rendertheme.InternalRenderTheme;
-import org.osmdroid.ResourceProxy;
 import org.osmdroid.api.IMapController;
 import org.osmdroid.bonuspack.overlays.Marker;
 import org.osmdroid.bonuspack.overlays.Polyline;
 import org.osmdroid.bonuspack.routing.OSRMRoadManager;
 import org.osmdroid.bonuspack.routing.Road;
 import org.osmdroid.bonuspack.routing.RoadManager;
-import org.osmdroid.bonuspack.routing.RoadNode;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
-import org.osmdroid.util.ResourceProxyImpl;
 import org.osmdroid.views.MapView;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.List;
 
 import sp.para.R;
-import sp.para.activities.MainActivity;
-import sp.para.models.Route;
-import sp.para.models.StopTime;
 import sp.para.models.Stops;
-import sp.para.models.Trip;
 
 /**
  * Created by Jd Banares on 3/1/2016.

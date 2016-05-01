@@ -87,7 +87,7 @@ public class SearchFragment extends Fragment {
                 ArrayList<StopsNode> closedList = new ArrayList<StopsNode>();
                 ArrayList<StopsNode> successors = new ArrayList<StopsNode>();
 
-                openList.add(new StopsNode(origin, orig.distanceTo(dest), 0, null, StopTime.getAllByStops(origin).get(0)));
+                openList.add(new StopsNode(orig.distanceTo(dest), 0, null, StopTime.getAllByStops(origin).get(0)));
 
                 int iter = 0;
 
@@ -125,19 +125,19 @@ public class SearchFragment extends Fragment {
                         if(prev != null) {
                             Stops prevStop = prev.getStop();
                             GeoPoint prevPoint = new GeoPoint(prevStop.getLat(), prevStop.getLon());
-                            successors.add(new StopsNode(prevStop, prevPoint.distanceTo(dest), node.getCost() + nodePoint.distanceTo(prevPoint), node, prev));
+                            successors.add(new StopsNode(prevPoint.distanceTo(dest), node.getCost() + nodePoint.distanceTo(prevPoint), node, prev));
                         }
 
                         if(next != null) {
                             Stops nextStop = next.getStop();
                             GeoPoint nextPoint = new GeoPoint(nextStop.getLat(), nextStop.getLon());
-                            successors.add(new StopsNode(nextStop, nextPoint.distanceTo(dest), node.getCost() + nodePoint.distanceTo(nextPoint), node, next));
+                            successors.add(new StopsNode(nextPoint.distanceTo(dest), node.getCost() + nodePoint.distanceTo(nextPoint), node, next));
                         }
                     }
 
                     for(Stops st: Stops.getAllWithinDistance(node.getStop())) {
                         GeoPoint stPoint = new GeoPoint(st.getLat(), st.getLon());
-                        successors.add(new StopsNode(st, stPoint.distanceTo(dest), node.getCost() + nodePoint.distanceTo(stPoint), node, StopTime.getAllByStops(st).get(0)));
+                        successors.add(new StopsNode(stPoint.distanceTo(dest), node.getCost() + nodePoint.distanceTo(stPoint), node, StopTime.getAllByStops(st).get(0)));
                     }
 
                     int size = successors.size();
@@ -184,7 +184,7 @@ public class SearchFragment extends Fragment {
 
                 for(StopsNode way: pathList) {
                     Log.d("-------------APP", "STOPS NAME = " + way.getStop().getName());
-                    Log.d("-------------APP", "STOPS TRIP = " + way.getTime().getTrip().getRoute().getRouteId());
+                    Log.d("-------------APP", "STOPS TRIP = " + way.getTime().getTrip().getRoute().getName());
                 }
 
                 for(StopsNode way: pathList) {

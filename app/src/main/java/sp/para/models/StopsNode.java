@@ -4,23 +4,19 @@ import android.util.Log;
 
 public class StopsNode {
 
-    private Stops stop;
     private int distance;
     private int cost;
     private StopsNode parent;
     private StopTime time;
 
-    public StopsNode(Stops stop, int distance, int cost, StopsNode parent, StopTime time) {
-        this.stop = stop;
+    public StopsNode(int distance, int cost, StopsNode parent, StopTime time) {
         this.distance = distance;
         this.cost = cost;
         this.parent = parent;
         this.time = time;
     }
 
-    public void setStop(Stops stop) { this.stop = stop; }
-
-    public Stops getStop() { return this.stop; }
+    public Stops getStop() { return this.time.getStop(); }
 
     public void setDistance(int distance) { this.distance = distance; }
 
