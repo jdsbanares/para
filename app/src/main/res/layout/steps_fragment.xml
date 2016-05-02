@@ -21,70 +21,25 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="@string/from"
-                android:id="@+id/lblFrom"
+                android:text="@string/stepsHeader"
+                android:id="@+id/lblStepsHeader"
                 android:textColor="@android:color/white"
                 android:textStyle="bold" />
-
-            <Space
-                android:layout_width="40px"
-                android:layout_height="20px"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp" />
-
-            <TextView
-                android:layout_width="260dp"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:id="@+id/txtFrom"
-                android:layout_alignParentTop="true"
-                android:layout_toRightOf="@+id/lblTo"
-                android:layout_toEndOf="@+id/lblTo"
-                android:textColor="@android:color/white"
-                android:singleLine="false" />
-
-            <Space
-                android:layout_width="20px"
-                android:layout_height="20px"
-                android:padding="10dp" />
-
-            <Space
-                android:layout_width="20px"
-                android:layout_height="20px"
-                android:padding="10dp" />
-
-            <Space
-                android:layout_width="20px"
-                android:layout_height="20px"
-                android:padding="10dp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="@string/to"
-                android:id="@+id/lblTo"
-                android:textColor="@android:color/white"
-                android:textStyle="bold" />
-
-            <Space
-                android:layout_width="40px"
-                android:layout_height="20px"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp" />
-
-            <TextView
-                android:layout_width="260dp"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:id="@+id/txtTo"
-                android:layout_alignParentTop="true"
-                android:layout_toRightOf="@+id/lblFrom"
-                android:layout_toEndOf="@+id/lblFrom"
-                android:textColor="@android:color/white" />
 
         </GridLayout>
 
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/background_light">
+
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/tblSteps"
+            android:layout_gravity="center"></TableLayout>
     </FrameLayout>
 
 </LinearLayout>

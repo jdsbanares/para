@@ -5,6 +5,7 @@
     <string name="destination">Destination</string>
     <string name="hello_world">Hello world!</string>
     <string name="origin">Origin</string>
+    <string name="stepsHeader">Directions</string>
     <string name="search_activity">Search</string>
     <string name="from">From</string>
     <string name="to">To</string>

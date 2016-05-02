@@ -2,15 +2,11 @@ package sp.para.activities;
 
 import android.app.Fragment;
 import android.app.FragmentTransaction;
-import android.content.Intent;
 import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.Button;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -20,8 +16,6 @@ import java.io.OutputStream;
 
 import sp.para.R;
 import sp.para.fragments.MapFragment;
-import sp.para.fragments.SearchFragment;
-import sp.para.fragments.StepsFragment;
 
 public class MainActivity extends FragmentActivity {
 

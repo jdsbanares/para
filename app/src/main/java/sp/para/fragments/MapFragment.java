@@ -268,12 +268,12 @@ public class MapFragment extends Fragment {
 
         getFragmentManager().popBackStack();
 
-        StepsFragment stepsFragment = StepsFragment.newInstance(waypoints.get(0).getStop(), waypoints.get(waypoints.size() - 1).getStop());
+        PartialStepsFragment partialStepsFragment = PartialStepsFragment.newInstance(waypoints.get(0).getStop(), waypoints.get(waypoints.size() - 1).getStop(), instList);
 
         FragmentTransaction ft = getFragmentManager().beginTransaction();
 //        ft.remove(getFragmentManager().findFragmentByTag("steps_frag"));
-        ft.add(R.id.main_activity, stepsFragment, "steps_frag");
-        ft.addToBackStack("steps_frag");
+        ft.add(R.id.main_activity, partialStepsFragment, "partial_steps_frag");
+        ft.addToBackStack("partialSteps_frag");
         ft.commit();
     }
 
