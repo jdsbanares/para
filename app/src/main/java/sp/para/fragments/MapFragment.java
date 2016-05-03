@@ -136,13 +136,13 @@ public class MapFragment extends Fragment {
 
         // Place marker on each stop
 
-        for(Stops currStop: Stops.getAll()){
-            Marker stopMarker = new Marker(map);
-            stopMarker.setPosition(new GeoPoint(currStop.getLat(), currStop.getLon()));
-            stopMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
-            map.getOverlays().add(stopMarker);
-        }
-        map.invalidate();
+//        for(Stops currStop: Stops.getAll()){
+//            Marker stopMarker = new Marker(map);
+//            stopMarker.setPosition(new GeoPoint(currStop.getLat(), currStop.getLon()));
+//            stopMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+//            map.getOverlays().add(stopMarker);
+//        }
+//        map.invalidate();
 
         searchBtn = (Button) view.findViewById(R.id.searchBtn);
 
@@ -243,7 +243,7 @@ public class MapFragment extends Fragment {
 
         for(StopsNode way: waypoints) {
             if(startIns == null) {
-                startIns = new InstructionNode(way.getTime(), way.getTime(), null);
+                startIns = new InstructionNode(way.getTime(), way.getTime(), way.getTime().getTrip().getRoute(), null);
                 currIns = startIns;
                 instList.add(startIns);
             }
@@ -251,7 +251,10 @@ public class MapFragment extends Fragment {
                 currIns.setEndStop(way.getTime());
             }
             else {
-                InstructionNode newIns = new InstructionNode(way.getTime(), way.getTime(), currIns);
+                InstructionNode newIns = new InstructionNode(currIns.getEndStop(), way.getTime(), null, currIns);
+                instList.add(newIns);
+                currIns = newIns;
+                newIns = new InstructionNode(way.getTime(), way.getTime(), way.getTime().getTrip().getRoute(), currIns);
                 instList.add(newIns);
                 currIns = newIns;
             }
@@ -263,7 +266,7 @@ public class MapFragment extends Fragment {
             Log.d("-------------APP", "*****************");
             Log.d("-------------APP", ">> "+inst.getStartStop().getStop().getName());
             Log.d("-------------APP", ">> "+inst.getEndStop().getStop().getName());
-            Log.d("-------------APP", ">> "+inst.getEndStop().getTrip().getRoute().getName());
+            Log.d("-------------APP", ">> "+inst.getRoute());
         }
 
         getFragmentManager().popBackStack();

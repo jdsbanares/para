@@ -6,13 +6,19 @@ public class InstructionNode {
 
     private StopTime startStop;
     private StopTime endStop;
+    private Route route;
     private InstructionNode parent;
 
-    public InstructionNode(StopTime startStop, StopTime endStop, InstructionNode parent) {
+    public InstructionNode(StopTime startStop, StopTime endStop, Route route, InstructionNode parent) {
         this.startStop = startStop;
         this.endStop = endStop;
+        this.route = route;
         this.parent = parent;
     }
+
+    public void setRoute(Route route) { this.route = route; }
+
+    public Route getRoute() { return this.route; }
 
     public void setStartStop(StopTime startStop) { this.startStop = startStop; }
 
