@@ -52,6 +52,13 @@ public class Trip extends Model {
                 .execute();
     }
 
+    public static List<Trip> getAllByRoute(Route route){
+        return new Select()
+                .from(Trip.class)
+                .where("route = ?", route.getId())
+                .execute();
+    }
+
     public static Trip getByTripId(String trip_id){
         return new Select()
                 .from(Trip.class)

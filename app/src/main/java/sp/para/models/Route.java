@@ -49,6 +49,7 @@ public class Route extends Model {
     public static List<Route> getAll(){
         return new Select()
                 .from(Route.class)
+                .orderBy("name asc")
                 .execute();
     }
 

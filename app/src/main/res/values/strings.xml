@@ -1,12 +1,12 @@
 <resources>
     <string name="app_name">para</string>
-
     <string name="action_settings">Settings</string>
     <string name="destination">Destination</string>
+    <string name="from">From</string>
     <string name="hello_world">Hello world!</string>
     <string name="origin">Origin</string>
-    <string name="stepsHeader">Directions</string>
+    <string name="routesHeader">Routes</string>
     <string name="search_activity">Search</string>
-    <string name="from">From</string>
+    <string name="stepsHeader">Directions</string>
     <string name="to">To</string>
 </resources>

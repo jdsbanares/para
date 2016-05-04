@@ -34,8 +34,11 @@ import java.util.ArrayList;
 
 import sp.para.R;
 import sp.para.models.InstructionNode;
+import sp.para.models.Route;
+import sp.para.models.StopTime;
 import sp.para.models.Stops;
 import sp.para.models.StopsNode;
+import sp.para.models.Trip;
 
 /**
  * Created by Jd Banares on 3/1/2016.
@@ -162,6 +165,63 @@ public class MapFragment extends Fragment {
         return view;
     }
 
+    public void showExisting(Route currRoute) {
+        GraphHopper hopper = new GraphHopper().forMobile();
+
+        File path = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),"graphhopper/maps");
+        File phMaps = new File(path.getAbsolutePath(), "philippines-gh");
+
+        hopper.load(phMaps.getAbsolutePath());
+
+        map.getOverlays().clear();
+
+        ArrayList<Stops> waypoints = new ArrayList<Stops>();
+
+        for(Trip currTrip: Trip.getAllByRoute(currRoute)) {
+            for(StopTime st: StopTime.getAllByTrip(currTrip)) {
+                waypoints.add(st.getStop());
+            }
+        }
+
+        Log.d("-------------APP", "waypoints -- "+waypoints.size());
+
+        ArrayList<GeoPoint> geopoints = new ArrayList<GeoPoint>();
+
+        for(int i=0; i < waypoints.size() - 1; i++) {
+            GHRequest req = new GHRequest(waypoints.get(i).getLat(), waypoints.get(i).getLon(),
+                    waypoints.get(i+1).getLat(), waypoints.get(i+1).getLon())
+                    .setAlgorithm(AlgorithmOptions.ASTAR_BI);
+//            req.getHints().put("instructions", "true");
+
+            GHResponse resp = hopper.route(req);
+
+            if(!resp.hasErrors()) {
+                PathWrapper pathResp = resp.getBest();
+
+                PointList tmp = pathResp.getPoints();
+                for (int j = 0; j < pathResp.getPoints().getSize(); j++) {
+                    geopoints.add(new GeoPoint(tmp.getLatitude(j), tmp.getLongitude(j)));
+                }
+            }
+            else {
+                for(Throwable error: resp.getErrors()) {
+                    Log.d("-------------APP", ""+error.getMessage());
+                }
+            }
+
+        }
+
+        Log.d("-------------APP", "geopoints -- "+geopoints.size());
+
+        RoadManager roadManager = new OSRMRoadManager();
+        Road road = roadManager.getRoad(geopoints);
+
+        Polyline roadOverlay = RoadManager.buildRoadOverlay(road, getActivity());
+        map.getOverlays().add(roadOverlay);
+        map.getController().setCenter(geopoints.get(0));
+        map.invalidate();
+    }
+
     public void showRoute(ArrayList<StopsNode> waypoints) {
         GraphHopper hopper = new GraphHopper().forMobile();
 
@@ -276,7 +336,7 @@ public class MapFragment extends Fragment {
         FragmentTransaction ft = getFragmentManager().beginTransaction();
 //        ft.remove(getFragmentManager().findFragmentByTag("steps_frag"));
         ft.add(R.id.main_activity, partialStepsFragment, "partial_steps_frag");
-        ft.addToBackStack("partialSteps_frag");
+        ft.addToBackStack("partial_steps_frag");
         ft.commit();
     }
 

@@ -1,6 +1,7 @@
 package sp.para.fragments;
 
 import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
@@ -32,6 +33,7 @@ public class SearchFragment extends Fragment {
 
     AutoCompleteTextView originTxtFld;
     AutoCompleteTextView destTxtFld;
+    Button routesBtn;
     Button findRouteBtn;
     Stops origin;
     Stops destination;
@@ -67,6 +69,20 @@ public class SearchFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 destination = destAdapter.getItem(position);
+            }
+        });
+
+        routesBtn = (Button) view.findViewById(R.id.routesBtn);
+
+        routesBtn.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                RoutesFragment routesFragment = new RoutesFragment();
+
+                FragmentTransaction ft = getFragmentManager().beginTransaction();
+                ft.add(R.id.main_activity, routesFragment, "routes_frag");
+                ft.addToBackStack("routes_frag");
+                ft.commit();
             }
         });
 
