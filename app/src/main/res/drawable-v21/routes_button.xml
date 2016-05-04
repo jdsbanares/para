@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@android:color/transparent">
+    <item
+        android:drawable="@drawable/ic_map_black_36dp"
+        android:bottom="10dp"
+        android:top="10dp"
+        android:left="10dp"
+        android:right="10dp"
+        />
+</layer-list>

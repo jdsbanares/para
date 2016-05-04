@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_pressed="false">
+        <layer-list xmlns:android="http://schemas.android.com/apk/res/android"
+            android:background="@android:color/transparent">
+            <item
+                android:drawable="@drawable/ic_map_black_36dp"
+                />
+        </layer-list>
+    </item>
+    <item android:state_pressed="true">
+        <layer-list xmlns:android="http://schemas.android.com/apk/res/android"
+            android:background="@android:color/transparent">
+            <item
+                android:drawable="@drawable/ic_map_black_36dp"
+                />
+        </layer-list>
+    </item>
+</selector>

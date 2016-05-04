@@ -7,10 +7,13 @@
     android:touchscreenBlocksFocus="false"
     android:background="#EAEAEA">
 
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/abc_action_bar_progress_bar_size"
-        android:layout_gravity="center_horizontal" />
+    <Button
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="@drawable/routes_button"
+        android:id="@+id/routesBtn"
+        android:layout_gravity="right|top"
+        android:theme="@android:style/TextAppearance.Holo.Widget.Button"/>
 
     <TextView
         android:layout_width="wrap_content"
