@@ -1,6 +1,7 @@
 package sp.para.fragments;
 
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.os.Environment;
@@ -31,6 +32,7 @@ import org.osmdroid.views.MapView;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 import sp.para.R;
 import sp.para.models.InstructionNode;
@@ -155,7 +157,7 @@ public class MapFragment extends Fragment {
                 Fragment searchFragment = new SearchFragment();
                 FragmentTransaction ft = getFragmentManager().beginTransaction();
                 ft.replace(R.id.main_activity, searchFragment, "search_frag");
-                ft.addToBackStack("search_frag");
+                ft.addToBackStack(null);
                 ft.commit();
 //                Intent intent = new Intent(getBaseContext(), SearchActivity.class);
 //                startActivity(intent);
@@ -166,6 +168,8 @@ public class MapFragment extends Fragment {
     }
 
     public void showExisting(Route currRoute) {
+        getFragmentManager().popBackStack();
+
         GraphHopper hopper = new GraphHopper().forMobile();
 
         File path = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),"graphhopper/maps");
@@ -177,15 +181,32 @@ public class MapFragment extends Fragment {
 
         ArrayList<Stops> waypoints = new ArrayList<Stops>();
 
+        List<Trip> trips = Trip.getAllByRoute(currRoute);
+
+        if(!trips.isEmpty()) {
+            for(StopTime st: StopTime.getAllByTrip(trips.get(0))) {
+                waypoints.add(st.getStop());
+            }
+        }
+
+        /*
         for(Trip currTrip: Trip.getAllByRoute(currRoute)) {
             for(StopTime st: StopTime.getAllByTrip(currTrip)) {
                 waypoints.add(st.getStop());
             }
         }
+        */
 
         Log.d("-------------APP", "waypoints -- "+waypoints.size());
 
         ArrayList<GeoPoint> geopoints = new ArrayList<GeoPoint>();
+
+        /*
+        for(int i=0; i < waypoints.size(); i++) {
+            Log.d("-------------APP", "waypoint "+i+" -- "+waypoints.get(i).getStopId());
+            geopoints.add(new GeoPoint(waypoints.get(i).getLat(), waypoints.get(i).getLon()));
+        }
+        */
 
         for(int i=0; i < waypoints.size() - 1; i++) {
             GHRequest req = new GHRequest(waypoints.get(i).getLat(), waypoints.get(i).getLon(),
@@ -220,6 +241,8 @@ public class MapFragment extends Fragment {
         map.getOverlays().add(roadOverlay);
         map.getController().setCenter(geopoints.get(0));
         map.invalidate();
+
+        getFragmentManager().popBackStack();
     }
 
     public void showRoute(ArrayList<StopsNode> waypoints) {
@@ -334,9 +357,8 @@ public class MapFragment extends Fragment {
         PartialStepsFragment partialStepsFragment = PartialStepsFragment.newInstance(waypoints.get(0).getStop(), waypoints.get(waypoints.size() - 1).getStop(), instList);
 
         FragmentTransaction ft = getFragmentManager().beginTransaction();
-//        ft.remove(getFragmentManager().findFragmentByTag("steps_frag"));
         ft.add(R.id.main_activity, partialStepsFragment, "partial_steps_frag");
-        ft.addToBackStack("partial_steps_frag");
+        ft.addToBackStack(null);
         ft.commit();
     }
 

@@ -81,7 +81,7 @@ public class SearchFragment extends Fragment {
 
                 FragmentTransaction ft = getFragmentManager().beginTransaction();
                 ft.add(R.id.main_activity, routesFragment, "routes_frag");
-                ft.addToBackStack("routes_frag");
+                ft.addToBackStack(null);
                 ft.commit();
             }
         });

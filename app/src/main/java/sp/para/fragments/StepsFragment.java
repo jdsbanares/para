@@ -37,7 +37,7 @@ public class StepsFragment extends Fragment {
                 dirText.append(inst.getEndStop().getStop().getName());
             }
             else if(inst.getStartStop().getId() == inst.getEndStop().getId()) {
-                dirText.append("You hae arrived at ");
+                dirText.append("You have arrived at ");
                 dirText.append(inst.getStartStop().getStop().getName());
             }
             else {
