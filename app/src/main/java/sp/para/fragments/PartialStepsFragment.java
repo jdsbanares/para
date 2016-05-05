@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -19,6 +20,7 @@ public class PartialStepsFragment extends Fragment {
     Stops from;
     Stops to;
     ArrayList<InstructionNode> instList;
+    FrameLayout partialFrame;
     TextView fromTxtFld;
     TextView toTxtFld;
 
@@ -26,13 +28,14 @@ public class PartialStepsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.partial_steps_fragment, container, false);
 
+        partialFrame = (FrameLayout) view.findViewById(R.id.partialFrame);
         fromTxtFld = (TextView) view.findViewById(R.id.txtFrom);
         toTxtFld = (TextView) view.findViewById(R.id.txtTo);
 
         fromTxtFld.setText(this.from.getName());
         toTxtFld.setText(this.to.getName());
 
-        view.setOnClickListener(new View.OnClickListener() {
+        partialFrame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 StepsFragment stepsFragment = new StepsFragment();

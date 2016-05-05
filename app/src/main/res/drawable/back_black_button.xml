@@ -4,7 +4,7 @@
         <layer-list xmlns:android="http://schemas.android.com/apk/res/android"
             android:background="@android:color/transparent">
             <item
-                android:drawable="@drawable/ic_map_white_36dp"
+                android:drawable="@drawable/ic_keyboard_backspace_black_36dp"
                 />
         </layer-list>
     </item>
@@ -12,7 +12,7 @@
         <layer-list xmlns:android="http://schemas.android.com/apk/res/android"
             android:background="@android:color/transparent">
             <item
-                android:drawable="@drawable/ic_map_white_36dp"
+                android:drawable="@drawable/ic_keyboard_backspace_black_36dp"
                 />
         </layer-list>
     </item>

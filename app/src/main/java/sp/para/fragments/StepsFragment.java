@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -17,11 +18,21 @@ import sp.para.models.InstructionNode;
 
 public class StepsFragment extends Fragment {
 
+    Button backBtn;
     ArrayList<InstructionNode> instList;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.steps_fragment, container, false);
+
+        backBtn = (Button) view.findViewById(R.id.backBtn);
+
+        backBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getFragmentManager().popBackStack();
+            }
+        });
 
         TableLayout tblSteps = (TableLayout) view.findViewById(R.id.tblSteps);
 

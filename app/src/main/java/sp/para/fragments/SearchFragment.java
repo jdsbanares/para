@@ -33,6 +33,7 @@ public class SearchFragment extends Fragment {
 
     AutoCompleteTextView originTxtFld;
     AutoCompleteTextView destTxtFld;
+    Button backBtn;
     Button routesBtn;
     Button findRouteBtn;
     Stops origin;
@@ -69,6 +70,15 @@ public class SearchFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 destination = destAdapter.getItem(position);
+            }
+        });
+
+        backBtn = (Button) view.findViewById(R.id.backBtn);
+
+        backBtn.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getFragmentManager().popBackStack();
             }
         });
 

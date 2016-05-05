@@ -61,22 +61,6 @@ public class MapFragment extends Fragment {
         map.setClickable(true);
         map.setBuiltInZoomControls(true);
 
-//        tileCache = AndroidUtil.createTileCache(getActivity().getBaseContext(), getClass().getSimpleName(), map.getModel().displayModel.getTileSize(),
-//                1f, map.getModel().frameBufferModel.getOverdrawFactor());
-//
-//        File path = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),"graphhopper/maps/philippines-gh");
-//        File phMaps = new File(path.getAbsolutePath(), "philippines.map");
-//
-//        MapDataStore mapDataStore = new MapFile(phMaps);
-//
-//        map.getLayerManager().getLayers().clear();
-//
-//        tileRendererLayer = new TileRendererLayer(tileCache, mapDataStore, map.getModel().mapViewPosition, false, true, AndroidGraphicFactory.INSTANCE);
-//        tileRendererLayer.setTextScale(1.5f);
-//        tileRendererLayer.setXmlRenderTheme(InternalRenderTheme.OSMARENDER);
-//        map.getModel().mapViewPosition.setMapPosition(new MapPosition(mapDataStore.boundingBox().getCenterPoint(), (byte) 15));
-//        map.getLayerManager().getLayers().add(tileRendererLayer);
-
         map.setTileSource(TileSourceFactory.MAPQUESTOSM);
         map.setMultiTouchControls(true);
         map.setMaxZoomLevel(17);
@@ -85,7 +69,7 @@ public class MapFragment extends Fragment {
 
         IMapController mapController = map.getController();
         mapController.setZoom(17);
-        mapController.setCenter(new GeoPoint(14.691719, 120.969944));
+        mapController.setCenter(new GeoPoint(14.6922, 120.971));
 
 //        Marker startMarker = new Marker(map);
 //        startMarker.setPosition(startPoint);
@@ -113,32 +97,6 @@ public class MapFragment extends Fragment {
 //        Log.d("-------------APP", "Trip size = " + Trip.getAll().size());
 //        Log.d("-------------APP", "StopTime size = "+ StopTime.getAll().size());
 
-        // Draw Lines
-/*
-        RoadManager roadManager = new OSRMRoadManager();
-
-        List<StopTime> stopTimeList = StopTime.getAllByTrip(Trip.getByTripId("724628"));
-//        List<StopTime> stopTimeList = StopTime.getAllByTrip(Trip.getByTripId("724674"));
-
-        for(int i = 0; i < stopTimeList.size()-1; i++) {
-            StopTime currLine = stopTimeList.get(i);
-            StopTime nextLine = stopTimeList.get(i+1);
-            ArrayList<GeoPoint> waypoints = new ArrayList<GeoPoint>();
-            GeoPoint startLine = new GeoPoint(currLine.getStop().getLat(),currLine.getStop().getLon());
-            waypoints.add(startLine);
-            GeoPoint endLine = new GeoPoint(nextLine.getStop().getLat(),nextLine.getStop().getLon());
-            waypoints.add(endLine);
-
-            Road road = roadManager.getRoad(waypoints);
-
-            Polyline roadOverlay = RoadManager.buildRoadOverlay(road, this);
-
-            map.getOverlays().add(roadOverlay);
-        }
-*/
-
-//        map.invalidate();
-
         // Place marker on each stop
 
 //        for(Stops currStop: Stops.getAll()){
@@ -159,8 +117,6 @@ public class MapFragment extends Fragment {
                 ft.replace(R.id.main_activity, searchFragment, "search_frag");
                 ft.addToBackStack(null);
                 ft.commit();
-//                Intent intent = new Intent(getBaseContext(), SearchActivity.class);
-//                startActivity(intent);
             }
         });
 
@@ -189,30 +145,14 @@ public class MapFragment extends Fragment {
             }
         }
 
-        /*
-        for(Trip currTrip: Trip.getAllByRoute(currRoute)) {
-            for(StopTime st: StopTime.getAllByTrip(currTrip)) {
-                waypoints.add(st.getStop());
-            }
-        }
-        */
-
         Log.d("-------------APP", "waypoints -- "+waypoints.size());
 
         ArrayList<GeoPoint> geopoints = new ArrayList<GeoPoint>();
-
-        /*
-        for(int i=0; i < waypoints.size(); i++) {
-            Log.d("-------------APP", "waypoint "+i+" -- "+waypoints.get(i).getStopId());
-            geopoints.add(new GeoPoint(waypoints.get(i).getLat(), waypoints.get(i).getLon()));
-        }
-        */
 
         for(int i=0; i < waypoints.size() - 1; i++) {
             GHRequest req = new GHRequest(waypoints.get(i).getLat(), waypoints.get(i).getLon(),
                     waypoints.get(i+1).getLat(), waypoints.get(i+1).getLon())
                     .setAlgorithm(AlgorithmOptions.ASTAR_BI);
-//            req.getHints().put("instructions", "true");
 
             GHResponse resp = hopper.route(req);
 
@@ -251,40 +191,13 @@ public class MapFragment extends Fragment {
         File path = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),"graphhopper/maps");
         File phMaps = new File(path.getAbsolutePath(), "philippines-gh");
 
-//        Log.d("-------------APP", "maps absolute "+ phMaps.getAbsolutePath());
-
         hopper.load(phMaps.getAbsolutePath());
 
         Log.d("-------------APP", "found graph " + hopper.getGraphHopperStorage().toString() + ", nodes:" + hopper.getGraphHopperStorage().getNodes());
 
-//        Log.d("-------------APP", "Road size = "+ road);
-
-//        for (int i=0; i<road.mNodes.size(); i++){
-//            RoadNode node = road.mNodes.get(i);
-//            Marker nodeMarker = new Marker(map);
-//            nodeMarker.setPosition(node.mLocation);
-//            nodeMarker.setIcon(getResources().getDrawable(R.drawable.bonuspack_bubble));
-//            nodeMarker.setTitle("Step "+i);
-//            map.getOverlays().add(nodeMarker);
-//        }
-
-//        Paint paintStroke = AndroidGraphicFactory.INSTANCE.createPaint();
-//        paintStroke.setStyle(Style.STROKE);
-//        paintStroke.setColor(Color.argb(128, 0, 0xCC, 0x33));
-//        paintStroke.setDashPathEffect(new float[]
-//                {
-//                        25, 15
-//                });
-//        paintStroke.setStrokeWidth(8);
-
-//        map.getLayerManager().getLayers().clear();
         map.getOverlays().clear();
 
         ArrayList<GeoPoint> geopoints = new ArrayList<GeoPoint>();
-
-//        for(Stops st : waypoints) {
-//            geopoints.add(new GeoPoint(st.getLat(), st.getLon()));
-//        }
 
         for(int i=0; i < waypoints.size() - 1; i++) {
             GHRequest req = new GHRequest(waypoints.get(i).getStop().getLat(), waypoints.get(i).getStop().getLon(),
@@ -341,15 +254,6 @@ public class MapFragment extends Fragment {
                 instList.add(newIns);
                 currIns = newIns;
             }
-        }
-
-        Log.d("-------------APP", "Instructions size -- "+instList.size());
-
-        for(InstructionNode inst: instList) {
-            Log.d("-------------APP", "*****************");
-            Log.d("-------------APP", ">> "+inst.getStartStop().getStop().getName());
-            Log.d("-------------APP", ">> "+inst.getEndStop().getStop().getName());
-            Log.d("-------------APP", ">> "+inst.getRoute());
         }
 
         getFragmentManager().popBackStack();
