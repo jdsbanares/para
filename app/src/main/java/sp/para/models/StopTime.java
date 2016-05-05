@@ -108,6 +108,9 @@ public class StopTime extends Model {
             Stops stopChecker;
             Trip tripChecker;
             String[] nextLine;
+
+            Log.d("-------------StopTime", "Populating StopTime!");
+
             while ((nextLine = reader.readNext()) != null) {
                 stopChecker = Stops.getByStopId(nextLine[2]);
 

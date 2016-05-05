@@ -66,6 +66,9 @@ public class Route extends Model {
             CSVReader reader = new CSVReader(new InputStreamReader(routeInStream),',', '"', 1);
             Route checker;
             String[] nextLine;
+
+            Log.d("-------------Route", "Populating Route!");
+
             while ((nextLine = reader.readNext()) != null) {
 
                 checker = getByRouteId(nextLine[9]);

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/search_layout"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:touchscreenBlocksFocus="false"
+    android:background="#EAEAEA">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:background="@android:color/holo_blue_light"
+        android:padding="15dp">
+
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:columnCount="2"
+            android:rowCount="1">
+
+            <Button
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:background="@drawable/back_white_button"
+                android:id="@+id/backBtn"
+                android:layout_gravity="top|left"
+                android:theme="@android:style/TextAppearance.Holo.Widget.Button"
+                android:layout_row="0"
+                android:layout_column="0" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:id="@+id/lblUpdateHeader"
+                android:textColor="@android:color/white"
+                android:textStyle="bold"
+                android:layout_column="1"
+                android:layout_row="0"
+                android:layout_gravity="left|center_vertical"
+                android:layout_marginLeft="15dp"
+                android:text="Update Data" />
+
+        </GridLayout>
+
+    </FrameLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Make sure you store the GTFS feed in a folder named &quot;gtfs&quot; stored at your phone&apos;s root directory."
+        android:id="@+id/textView"
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="15dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Please click the button below to begin updating the map data."
+        android:id="@+id/textView2"
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="15dp" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Update Data"
+        android:id="@+id/updateBtn"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp" />
+
+</LinearLayout>

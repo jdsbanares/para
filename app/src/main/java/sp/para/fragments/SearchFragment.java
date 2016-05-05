@@ -6,6 +6,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -93,6 +94,19 @@ public class SearchFragment extends Fragment {
                 ft.add(R.id.main_activity, routesFragment, "routes_frag");
                 ft.addToBackStack(null);
                 ft.commit();
+            }
+        });
+
+        routesBtn.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                UpdateFragment updateFragment = new UpdateFragment();
+
+                FragmentTransaction ft = getFragmentManager().beginTransaction();
+                ft.add(R.id.main_activity, updateFragment, "update_frag");
+                ft.addToBackStack(null);
+                ft.commit();
+                return true;
             }
         });
 

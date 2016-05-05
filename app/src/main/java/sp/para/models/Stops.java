@@ -115,6 +115,9 @@ public class Stops extends Model {
             CSVReader reader = new CSVReader(new InputStreamReader(stopInStream),',', '"', 1);
             Stops checker;
             String[] nextLine;
+
+            Log.d("-------------Stops", "Populating Stops!");
+
             while ((nextLine = reader.readNext()) != null) {
                 double newLat = Double.parseDouble(nextLine[4]);
                 double newLon = Double.parseDouble(nextLine[5]);

@@ -72,6 +72,9 @@ public class Trip extends Model {
             CSVReader reader = new CSVReader(new InputStreamReader(tripInStream),',', '"', 1);
             Trip checker;
             String[] nextLine;
+
+            Log.d("-------------Trip", "Populating Trip!");
+
             while ((nextLine = reader.readNext()) != null) {
 
                 checker = getByTripId(nextLine[10]);
