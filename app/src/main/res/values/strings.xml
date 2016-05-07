@@ -4,11 +4,12 @@
     <string name="destination">Destination</string>
     <string name="from">From</string>
     <string name="hello_world">Hello world!</string>
+    <string name="null_orig_dest">Please input an origin and/or destination.</string>
     <string name="origin">Origin</string>
     <string name="routesHeader">Routes</string>
+    <string name="same_orig_dest">You have selected the same stop. Please input a different origin and/or destination.</string>
     <string name="search_activity">Search</string>
     <string name="stepsHeader">Directions</string>
     <string name="to">To</string>
-    <string name="null_orig_dest">Please input an origin and/or destination.</string>
-    <string name="same_orig_dest">You have selected the same stop. Please input a different origin and/or destination.</string>
+    <string name="update_start">Update has been started. You will be notified once the update has been finished.</string>
 </resources>

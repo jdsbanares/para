@@ -1,8 +1,12 @@
 package sp.para.fragments;
 
 import android.app.Fragment;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +15,7 @@ import android.widget.Button;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -48,6 +53,8 @@ public class UpdateFragment extends Fragment {
         updateBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Toast.makeText(getActivity(), R.string.update_start, Toast.LENGTH_LONG).show();
+
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
@@ -62,10 +69,32 @@ public class UpdateFragment extends Fragment {
                             Trip.populate(tripFile);
                             StopTime.populate(stopTimeFile);
 
+                            NotificationCompat.Builder mBuilder =
+                                    new NotificationCompat.Builder(getActivity())
+                                    .setSmallIcon(R.drawable.ic_directions_white_36dp)
+                                    .setContentTitle("Para")
+                                    .setContentText("Data update has been completed.");
+
+                            mBuilder.setDefaults(Notification.DEFAULT_LIGHTS | Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE);
+
+                            NotificationManager mNotifyMgr =
+                                    (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
+                            mNotifyMgr.notify(001, mBuilder.build());
+
                             Log.d("-------------APP", "Successfully updated data!");
                         }
                         catch(FileNotFoundException ex) {
-                            Log.d("-------------APP", "File not found exception!");
+                            NotificationCompat.Builder mBuilder =
+                                    new NotificationCompat.Builder(getActivity())
+                                            .setSmallIcon(R.drawable.ic_directions_white_36dp)
+                                            .setContentTitle("Para")
+                                            .setContentText("Update failed! Please make sure you have the GTFS feed in the proper directory.");
+
+                            mBuilder.setDefaults(Notification.DEFAULT_LIGHTS | Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE);
+
+                            NotificationManager mNotifyMgr =
+                                    (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
+                            mNotifyMgr.notify(002, mBuilder.build());
                         }
                     }
                 }).start();
