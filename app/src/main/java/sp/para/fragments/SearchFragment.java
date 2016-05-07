@@ -2,6 +2,7 @@ package sp.para.fragments;
 
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,6 +16,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import org.osmdroid.util.GeoPoint;
 
@@ -37,8 +40,9 @@ public class SearchFragment extends Fragment {
     Button backBtn;
     Button routesBtn;
     Button findRouteBtn;
-    Stops origin;
-    Stops destination;
+    Stops origin = null;
+    Stops destination = null;
+    ProgressBar progressBar;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -50,6 +54,8 @@ public class SearchFragment extends Fragment {
 //        Log.d("-------------APP", "StopTime size = "+ StopTime.getAll().size());
 
         List<Stops> stopsList = Stops.getAll();
+
+        progressBar = (ProgressBar) view.findViewById(R.id.progressBar);
 
         originTxtFld = (AutoCompleteTextView) view.findViewById(R.id.searchOrigin);
         destTxtFld = (AutoCompleteTextView) view.findViewById(R.id.searchDestination);
@@ -88,6 +94,12 @@ public class SearchFragment extends Fragment {
         routesBtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+                View currView = getActivity().getCurrentFocus();
+                if(currView != null) {
+                    InputMethodManager inputManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    inputManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+                }
+
                 RoutesFragment routesFragment = new RoutesFragment();
 
                 FragmentTransaction ft = getFragmentManager().beginTransaction();
@@ -100,6 +112,12 @@ public class SearchFragment extends Fragment {
         routesBtn.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
+                View currView = getActivity().getCurrentFocus();
+                if(currView != null) {
+                    InputMethodManager inputManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    inputManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+                }
+
                 UpdateFragment updateFragment = new UpdateFragment();
 
                 FragmentTransaction ft = getFragmentManager().beginTransaction();
@@ -115,154 +133,149 @@ public class SearchFragment extends Fragment {
         findRouteBtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                InputMethodManager inputManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                inputManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+                View currView = getActivity().getCurrentFocus();
+                if(currView != null) {
+                    InputMethodManager inputManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    inputManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+                }
 
-                ArrayList<StopsNode> waypoints = new ArrayList<StopsNode>();
-                GeoPoint orig = new GeoPoint(origin.getLat(), origin.getLon());
-                GeoPoint dest = new GeoPoint(destination.getLat(), destination.getLon());
+                if(origin == null || destination == null) {
+                    Toast.makeText(getActivity(), "Please input an origin and/or destination.", Toast.LENGTH_LONG).show();
+                }
+                else if(origin.getStopId() == destination.getStopId()) {
+                    Toast.makeText(getActivity(), "You have selected the same stop. Please input a different origin and/or destination.", Toast.LENGTH_LONG).show();
+                }
+                else {
 
-                // TODO: Do A* search_fragment using origin and destination
-                ArrayList<StopsNode> openList = new ArrayList<StopsNode>();
-                ArrayList<StopsNode> closedList = new ArrayList<StopsNode>();
-                ArrayList<StopsNode> successors = new ArrayList<StopsNode>();
+                    backBtn.setEnabled(false);
+                    routesBtn.setEnabled(false);
+                    findRouteBtn.setEnabled(false);
+                    originTxtFld.setEnabled(false);
+                    destTxtFld.setEnabled(false);
+                    progressBar.setVisibility(View.VISIBLE);
 
-                ArrayList<StopTime> initialStops = (ArrayList) StopTime.getAllByStops(origin);
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            final ArrayList<StopsNode> waypoints = new ArrayList<StopsNode>();
+                            GeoPoint orig = new GeoPoint(origin.getLat(), origin.getLon());
+                            GeoPoint dest = new GeoPoint(destination.getLat(), destination.getLon());
 
-                Log.d("-------------APP", "Initial SIZE = " + initialStops.size());
+                            // TODO: Do A* search_fragment using origin and destination
+                            ArrayList<StopsNode> openList = new ArrayList<StopsNode>();
+                            ArrayList<StopsNode> closedList = new ArrayList<StopsNode>();
+                            ArrayList<StopsNode> successors = new ArrayList<StopsNode>();
 
-//                for(StopTime st: initialStops) {
-                    openList.add(new StopsNode(orig.distanceTo(dest), 0, null, initialStops.get(0)));
-//                }
+                            ArrayList<StopTime> initialStops = (ArrayList) StopTime.getAllByStops(origin);
 
-                int iter = 0;
+                            Log.d("-------------APP", "Initial SIZE = " + initialStops.size());
 
-                while(!openList.isEmpty()) {
+                            openList.add(new StopsNode(orig.distanceTo(dest), 0, null, initialStops.get(0)));
 
-                    StopsNode node;
-                    node = openList.get(0);
+                            int iter = 0;
 
-                    Log.d("-------------APP", "Iter SIZE = " + iter++);
-                    Log.d("-------------APP", "Curr Stop = " + node.getStop().getName());
+                            while (!openList.isEmpty()) {
 
-                    // Remove node from openList
-                    openList.remove(0);
-                    // Transfer node to closedList
-                    closedList.add(node);
+                                StopsNode node;
+                                node = openList.get(0);
 
-                    // Check if distance of node is zero
-                    // If zero, break the while loop (Solution found)
-                    // Else, proceed to the loop body
-                    if(node.getDistance() == 0) {
-                        break;
-                    }
+                                Log.d("-------------APP", "Iter SIZE = " + iter++);
+                                Log.d("-------------APP", "Curr Stop = " + node.getStop().getName());
 
-                    GeoPoint nodePoint = new GeoPoint(node.getStop().getLat(), node.getStop().getLon());
+                                // Remove node from openList
+                                openList.remove(0);
+                                // Transfer node to closedList
+                                closedList.add(node);
 
-                    // Generate successor/s
-                    for(StopTime st: StopTime.getAllByStops(node.getStop())) {
-                        StopTime prev = node.getTime().getPrev();
-                        StopTime next = node.getTime().getNext();
+                                // Check if distance of node is zero
+                                // If zero, break the while loop (Solution found)
+                                // Else, proceed to the loop body
+                                if (node.getDistance() == 0) {
+                                    break;
+                                }
 
-                        if(prev != null) {
-                            Stops prevStop = prev.getStop();
-                            GeoPoint prevPoint = new GeoPoint(prevStop.getLat(), prevStop.getLon());
-                            successors.add(new StopsNode(prevPoint.distanceTo(dest), node.getCost() + nodePoint.distanceTo(prevPoint), node, prev));
-                        }
+                                GeoPoint nodePoint = new GeoPoint(node.getStop().getLat(), node.getStop().getLon());
 
-                        if(next != null) {
-                            Stops nextStop = next.getStop();
-                            GeoPoint nextPoint = new GeoPoint(nextStop.getLat(), nextStop.getLon());
-                            successors.add(new StopsNode(nextPoint.distanceTo(dest), node.getCost() + nodePoint.distanceTo(nextPoint), node, next));
-                        }
-                    }
+                                // Generate successor/s
+                                for (StopTime st : StopTime.getAllByStops(node.getStop())) {
+                                    StopTime prev = node.getTime().getPrev();
+                                    StopTime next = node.getTime().getNext();
 
-                    for(Stops st: Stops.getAllWithinDistance(node.getStop())) {
-                        GeoPoint stPoint = new GeoPoint(st.getLat(), st.getLon());
-                        successors.add(new StopsNode(stPoint.distanceTo(dest), node.getCost() + nodePoint.distanceTo(stPoint), node, StopTime.getAllByStops(st).get(0)));
-                    }
+                                    if (prev != null) {
+                                        Stops prevStop = prev.getStop();
+                                        GeoPoint prevPoint = new GeoPoint(prevStop.getLat(), prevStop.getLon());
+                                        successors.add(new StopsNode(prevPoint.distanceTo(dest), node.getCost() + nodePoint.distanceTo(prevPoint), node, prev));
+                                    }
 
-                    int size = successors.size();
+                                    if (next != null) {
+                                        Stops nextStop = next.getStop();
+                                        GeoPoint nextPoint = new GeoPoint(nextStop.getLat(), nextStop.getLon());
+                                        successors.add(new StopsNode(nextPoint.distanceTo(dest), node.getCost() + nodePoint.distanceTo(nextPoint), node, next));
+                                    }
+                                }
 
-                    // Add successors to openList if not found in both lists
-                    for(int i = 0; i < size; i++) {
+                                for (Stops st : Stops.getAllWithinDistance(node.getStop())) {
+                                    GeoPoint stPoint = new GeoPoint(st.getLat(), st.getLon());
+                                    successors.add(new StopsNode(stPoint.distanceTo(dest), node.getCost() + nodePoint.distanceTo(stPoint), node, StopTime.getAllByStops(st).get(0)));
+                                }
 
-                        StopsNode child = successors.get(i);
+                                int size = successors.size();
 
-                        int closedIndex = indexInList(closedList, child);
+                                // Add successors to openList if not found in both lists
+                                for (int i = 0; i < size; i++) {
 
-                        if (closedIndex > -1) {
-                            if (closedList.get(closedIndex).getHeuristic() > child.getHeuristic())
-                                insertNode(openList, child);
-                            continue;
-                        }
+                                    StopsNode child = successors.get(i);
 
-                        int openIndex = indexInList(openList, child);
+                                    int closedIndex = indexInList(closedList, child);
 
-                        if (openIndex > -1) {
-                            if (openList.get(openIndex).getHeuristic() > child.getHeuristic()) {
-                                openList.remove(openIndex);
-                                insertNode(openList, child);
+                                    if (closedIndex > -1) {
+                                        if (closedList.get(closedIndex).getHeuristic() > child.getHeuristic())
+                                            insertNode(openList, child);
+                                        continue;
+                                    }
+
+                                    int openIndex = indexInList(openList, child);
+
+                                    if (openIndex > -1) {
+                                        if (openList.get(openIndex).getHeuristic() > child.getHeuristic()) {
+                                            openList.remove(openIndex);
+                                            insertNode(openList, child);
+                                        }
+                                        continue;
+                                    }
+
+                                    insertNode(openList, child);
+                                }
+
+                                successors.clear();
+
                             }
-                            continue;
+
+                            ArrayList<StopsNode> pathList = new ArrayList<StopsNode>();
+                            StopsNode currNode = closedList.get(closedList.size() - 1);
+
+                            while (currNode != null) {
+                                pathList.add(currNode);
+                                currNode = currNode.getParent();
+                            }
+
+                            Log.d("-------------APP", "PATH LIST = " + pathList.size());
+
+                            for (StopsNode way : pathList) {
+                                waypoints.add(way);
+                            }
+
+                            final MapFragment mf = (MapFragment) getFragmentManager().findFragmentByTag("map_frag");
+                            mf.getView().post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Collections.reverse(waypoints);
+                                    mf.showRoute(waypoints);
+                                }
+                            });
                         }
-
-                        insertNode(openList, child);
-                    }
-
-                    successors.clear();
-
+                    }).start();
                 }
-
-                ArrayList<StopsNode> pathList = new ArrayList<StopsNode>();
-                StopsNode currNode = closedList.get(closedList.size() - 1);
-
-                while(currNode != null) {
-                    pathList.add(currNode);
-                    currNode = currNode.getParent();
-                }
-
-                Log.d("-------------APP", "PATH LIST = " + pathList.size());
-
-//                for(StopsNode way: pathList) {
-//                    Log.d("-------------APP", "STOPS NAME = " + way.getStop().getName());
-//                    Log.d("-------------APP", "STOPS TRIP = " + way.getTime().getTrip().getRoute().getName());
-//                }
-
-                for(StopsNode way: pathList) {
-                    waypoints.add(way);
-                }
-
-                MapFragment mf = (MapFragment) getFragmentManager().findFragmentByTag("map_frag");
-                Collections.reverse(waypoints);
-                mf.showRoute(waypoints);
-                /*
-                Log.d("-------------APP", "ORIGIN SELECTED = " + origin.getLat());
-                Log.d("-------------APP", "DESTIN SELECTED = " + destination.getLat());
-
-                List<StopTime> originStopTimeList = StopTime.getAllByStops(origin);
-
-                Log.d("-------------APP", "ORIGIN ST SIZE = " + originStopTimeList.size());
-
-                for(StopTime st : originStopTimeList) {
-                    StopTime prev = st.getPrev();
-                    StopTime next = st.getNext();
-                    if(prev != null)
-                        Log.d("-------------APP", "ST PREV = " + prev.getStop().getName());
-                    if(next != null)
-                        Log.d("-------------APP", "ST NEXT = " + next.getStop().getName());
-                }
-                */
-
-
-//                List<Trip> originTripList = new ArrayList<Trip>();
-//                for(StopTime st : originStopTimeList) {
-//                    originTripList.add(st.getTrip());
-//                }
-//
-//                Set<Trip> uniqueTrips = new LinkedHashSet<Trip>(originTripList);
-//
-//                Log.d("-------------APP", "ORIGIN TRIP SIZE = " + uniqueTrips.size());
             }
 
             public int indexInList(List<StopsNode> stopsList, StopsNode node) {

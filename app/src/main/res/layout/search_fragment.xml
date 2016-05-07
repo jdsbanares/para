@@ -84,4 +84,14 @@
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp" />
 
+    <ProgressBar
+        style="?android:attr/progressBarStyleHorizontal"
+        android:visibility="invisible"
+        android:indeterminate="true"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/progressBar"
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="10dp" />
+
 </LinearLayout>
