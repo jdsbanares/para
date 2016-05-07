@@ -3,6 +3,7 @@ package sp.para.fragments;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
@@ -20,6 +21,7 @@ import com.graphhopper.util.PointList;
 
 import org.mapsforge.map.layer.cache.TileCache;
 import org.mapsforge.map.layer.renderer.TileRendererLayer;
+import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.api.IMapController;
 import org.osmdroid.bonuspack.overlays.Marker;
 import org.osmdroid.bonuspack.overlays.Polyline;
@@ -29,6 +31,7 @@ import org.osmdroid.bonuspack.routing.RoadManager;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
+import org.osmdroid.views.overlay.PathOverlay;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -147,7 +150,7 @@ public class MapFragment extends Fragment {
 
         Log.d("-------------APP", "waypoints -- "+waypoints.size());
 
-        ArrayList<GeoPoint> geopoints = new ArrayList<GeoPoint>();
+        ArrayList<IGeoPoint> geopoints = new ArrayList<IGeoPoint>();
 
         for(int i=0; i < waypoints.size() - 1; i++) {
             GHRequest req = new GHRequest(waypoints.get(i).getLat(), waypoints.get(i).getLon(),
@@ -174,15 +177,25 @@ public class MapFragment extends Fragment {
 
         Log.d("-------------APP", "geopoints -- "+geopoints.size());
 
-        RoadManager roadManager = new OSRMRoadManager();
-        Road road = roadManager.getRoad(geopoints);
+        Marker startMarker = new Marker(map);
+        startMarker.setTitle("Origin");
+        startMarker.setPosition(new GeoPoint(waypoints.get(0).getLat(), waypoints.get(0).getLon()));
+        startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+        map.getOverlays().add(startMarker);
 
-        Polyline roadOverlay = RoadManager.buildRoadOverlay(road, getActivity());
-        map.getOverlays().add(roadOverlay);
+        Marker endMarker = new Marker(map);
+        endMarker.setTitle("Destination");
+        endMarker.setPosition(new GeoPoint(waypoints.get(waypoints.size()-1).getLat(), waypoints.get(waypoints.size()-1).getLon()));
+        endMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+        map.getOverlays().add(endMarker);
+
+        PathOverlay geoPath = new PathOverlay(Color.BLUE, getActivity().getApplicationContext());
+        geoPath.getPaint().setStrokeWidth(5);
+        geoPath.addPoints(geopoints);
+        map.getOverlays().add(geoPath);
+
         map.getController().setCenter(geopoints.get(0));
         map.invalidate();
-
-        getFragmentManager().popBackStack();
     }
 
     public void showRoute(ArrayList<StopsNode> waypoints) {
@@ -197,7 +210,7 @@ public class MapFragment extends Fragment {
 
         map.getOverlays().clear();
 
-        ArrayList<GeoPoint> geopoints = new ArrayList<GeoPoint>();
+        ArrayList<IGeoPoint> geopoints = new ArrayList<IGeoPoint>();
 
         for(int i=0; i < waypoints.size() - 1; i++) {
             GHRequest req = new GHRequest(waypoints.get(i).getStop().getLat(), waypoints.get(i).getStop().getLon(),
@@ -225,13 +238,24 @@ public class MapFragment extends Fragment {
 
         }
 
-        RoadManager roadManager = new OSRMRoadManager();
-        Road road = roadManager.getRoad(geopoints);
+        Marker startMarker = new Marker(map);
+        startMarker.setTitle("Origin");
+        startMarker.setPosition(new GeoPoint(waypoints.get(0).getStop().getLat(), waypoints.get(0).getStop().getLon()));
+        startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+        map.getOverlays().add(startMarker);
 
-        Polyline roadOverlay = RoadManager.buildRoadOverlay(road, getActivity());
-        map.getOverlays().add(roadOverlay);
+        Marker endMarker = new Marker(map);
+        endMarker.setTitle("Destination");
+        endMarker.setPosition(new GeoPoint(waypoints.get(waypoints.size()-1).getStop().getLat(), waypoints.get(waypoints.size()-1).getStop().getLon()));
+        endMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+        map.getOverlays().add(endMarker);
+
+        PathOverlay geoPath = new PathOverlay(Color.BLUE, getActivity().getApplicationContext());
+        geoPath.getPaint().setStrokeWidth(5);
+        geoPath.addPoints(geopoints);
+        map.getOverlays().add(geoPath);
+
         map.getController().setCenter(geopoints.get(0));
-        map.invalidate();
 
         ArrayList<InstructionNode> instList = new ArrayList<InstructionNode>();
         InstructionNode startIns = null;
