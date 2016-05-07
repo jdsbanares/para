@@ -124,7 +124,7 @@ public class MapFragment extends Fragment {
     }
 
     public void showExisting(Route currRoute) {
-        getFragmentManager().popBackStack();
+        getFragmentManager().popBackStack(getFragmentManager().getBackStackEntryAt(0).getId(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
 
         GraphHopper hopper = new GraphHopper().forMobile();
 
@@ -256,7 +256,7 @@ public class MapFragment extends Fragment {
             }
         }
 
-        getFragmentManager().popBackStack();
+        getFragmentManager().popBackStack(getFragmentManager().getBackStackEntryAt(0).getId(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
 
         PartialStepsFragment partialStepsFragment = PartialStepsFragment.newInstance(waypoints.get(0).getStop(), waypoints.get(waypoints.size() - 1).getStop(), instList);
 

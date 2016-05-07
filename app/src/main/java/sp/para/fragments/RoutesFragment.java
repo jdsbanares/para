@@ -21,6 +21,7 @@ import sp.para.models.Route;
 public class RoutesFragment extends Fragment {
 
     Button backBtn;
+    TableLayout tblRoutes;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -35,7 +36,7 @@ public class RoutesFragment extends Fragment {
             }
         });
 
-        TableLayout tblRoutes = (TableLayout) view.findViewById(R.id.tblRoutes);
+        tblRoutes = (TableLayout) view.findViewById(R.id.tblRoutes);
 
         for(final Route currRoute: Route.getAll()) {
             TableRow newRow = new TableRow(getActivity());
@@ -60,7 +61,6 @@ public class RoutesFragment extends Fragment {
 
             trial.setPadding(20,10,20,10);
         }
-
         return view;
     }
 

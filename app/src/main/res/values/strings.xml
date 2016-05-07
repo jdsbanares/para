@@ -9,4 +9,6 @@
     <string name="search_activity">Search</string>
     <string name="stepsHeader">Directions</string>
     <string name="to">To</string>
+    <string name="null_orig_dest">Please input an origin and/or destination.</string>
+    <string name="same_orig_dest">You have selected the same stop. Please input a different origin and/or destination.</string>
 </resources>

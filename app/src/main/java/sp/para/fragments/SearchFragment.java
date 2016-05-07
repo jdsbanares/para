@@ -140,10 +140,10 @@ public class SearchFragment extends Fragment {
                 }
 
                 if(origin == null || destination == null) {
-                    Toast.makeText(getActivity(), "Please input an origin and/or destination.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), R.string.null_orig_dest, Toast.LENGTH_LONG).show();
                 }
                 else if(origin.getStopId() == destination.getStopId()) {
-                    Toast.makeText(getActivity(), "You have selected the same stop. Please input a different origin and/or destination.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), R.string.same_orig_dest, Toast.LENGTH_LONG).show();
                 }
                 else {
 
