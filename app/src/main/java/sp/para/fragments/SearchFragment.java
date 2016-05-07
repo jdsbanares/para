@@ -157,7 +157,6 @@ public class SearchFragment extends Fragment {
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
-                            final ArrayList<StopsNode> waypoints = new ArrayList<StopsNode>();
                             GeoPoint orig = new GeoPoint(origin.getLat(), origin.getLon());
                             GeoPoint dest = new GeoPoint(destination.getLat(), destination.getLon());
 
@@ -251,7 +250,7 @@ public class SearchFragment extends Fragment {
 
                             }
 
-                            ArrayList<StopsNode> pathList = new ArrayList<StopsNode>();
+                            final ArrayList<StopsNode> pathList = new ArrayList<StopsNode>();
                             StopsNode currNode = closedList.get(closedList.size() - 1);
 
                             while (currNode != null) {
@@ -261,16 +260,12 @@ public class SearchFragment extends Fragment {
 
                             Log.d("-------------APP", "PATH LIST = " + pathList.size());
 
-                            for (StopsNode way : pathList) {
-                                waypoints.add(way);
-                            }
-
                             final MapFragment mf = (MapFragment) getFragmentManager().findFragmentByTag("map_frag");
                             mf.getView().post(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Collections.reverse(waypoints);
-                                    mf.showRoute(waypoints);
+                                    Collections.reverse(pathList);
+                                    mf.showRoute(pathList);
                                 }
                             });
                         }
