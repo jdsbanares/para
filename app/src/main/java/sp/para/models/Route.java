@@ -46,6 +46,11 @@ public class Route extends Model {
 
     public String getDescription() { return this.description; }
 
+    @Override
+    public String toString() {
+        return this.name;
+    }
+
     public static List<Route> getAll(){
         return new Select()
                 .from(Route.class)
