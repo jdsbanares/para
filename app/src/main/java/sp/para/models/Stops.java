@@ -85,6 +85,13 @@ public class Stops extends Model {
         return this.name;
     }
 
+    public static int getCount(){
+        return new Select()
+                .from(Stops.class)
+                .execute()
+                .size();
+    }
+
     public static List<Stops> getAll(){
         return new Select()
                 .from(Stops.class)

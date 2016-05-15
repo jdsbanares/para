@@ -6,11 +6,13 @@ import com.activeandroid.ActiveAndroid;
 import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
+import com.activeandroid.query.Delete;
 import com.activeandroid.query.Select;
 import com.opencsv.CSVReader;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.List;
 
 @Table(name="route")
@@ -50,6 +52,34 @@ public class Route extends Model {
     public String toString() {
         return this.name;
     }
+
+    /*
+    public static void cleanUp(){
+        ArrayList<StopTime> stopTimes = new Select()
+                .from(StopTime.class)
+                .execute();
+
+        ArrayList<Long> tripId = new ArrayList<Long>();
+        for(StopTime st: stopTimes){
+            tripId.add(st.getTrip().getId());
+        }
+
+        ArrayList<Trip> trips = new Select()
+                .from(Trip.class)
+                .where("id in ?", tripId.toArray())
+                .execute();
+
+        ArrayList<Long> routeId = new ArrayList<Long>();
+        for(Trip tr: trips){
+            routeId.add(tr.getRoute().getId());
+        }
+
+        new Delete()
+                .from(Route.class)
+                .where("id not in ?", routeId.toArray())
+                .execute();
+    }
+    */
 
     public static List<Route> getAll(){
         return new Select()
