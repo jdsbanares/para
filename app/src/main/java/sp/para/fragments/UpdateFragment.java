@@ -80,8 +80,6 @@ public class UpdateFragment extends Fragment {
                             NotificationManager mNotifyMgr =
                                     (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
                             mNotifyMgr.notify(001, mBuilder.build());
-
-                            Log.d("-------------APP", "Successfully updated data!");
                         }
                         catch(FileNotFoundException ex) {
                             NotificationCompat.Builder mBuilder =
@@ -98,7 +96,6 @@ public class UpdateFragment extends Fragment {
                         }
                     }
                 }).start();
-                Log.d("-------------APP", "UPDATE THREAD STARTED!");
             }
         });
 

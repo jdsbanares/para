@@ -1,7 +1,5 @@
 package sp.para.models;
 
-import android.util.Log;
-
 public class StopsNode {
 
     private int distance;

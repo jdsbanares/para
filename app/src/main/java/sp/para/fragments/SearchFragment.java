@@ -49,9 +49,6 @@ public class SearchFragment extends Fragment {
         View view = inflater.inflate(R.layout.search_fragment, container, false);
 
         Log.d("-------------APP", "Stops size = " + Stops.getAll().size());
-//        Log.d("-------------APP", "Route size = " + Route.getAll().size());
-//        Log.d("-------------APP", "Trip size = " + Trip.getAll().size());
-//        Log.d("-------------APP", "StopTime size = "+ StopTime.getAll().size());
 
         List<Stops> stopsList = Stops.getAll();
 
@@ -166,8 +163,6 @@ public class SearchFragment extends Fragment {
 
                             ArrayList<StopTime> initialStops = (ArrayList) StopTime.getAllByStops(origin);
 
-                            Log.d("-------------APP", "Initial SIZE = " + initialStops.size());
-
                             openList.add(new StopsNode(orig.distanceTo(dest), 0, null, initialStops.get(0)));
 
                             int iter = 0;
@@ -176,9 +171,6 @@ public class SearchFragment extends Fragment {
 
                                 StopsNode node;
                                 node = openList.get(0);
-
-                                Log.d("-------------APP", "Iter SIZE = " + iter++);
-                                Log.d("-------------APP", "Curr Stop = " + node.getStop().getName());
 
                                 // Remove node from openList
                                 openList.remove(0);
@@ -256,8 +248,6 @@ public class SearchFragment extends Fragment {
                                 pathList.add(currNode);
                                 currNode = currNode.getParent();
                             }
-
-                            Log.d("-------------APP", "PATH LIST = " + pathList.size());
 
                             final MapFragment mf = (MapFragment) getFragmentManager().findFragmentByTag("map_frag");
                             mf.getView().post(new Runnable() {

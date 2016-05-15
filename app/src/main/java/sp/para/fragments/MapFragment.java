@@ -52,8 +52,6 @@ public class MapFragment extends Fragment {
 
     Button searchBtn;
     MapView map;
-    TileCache tileCache;
-    TileRendererLayer tileRendererLayer;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -73,42 +71,6 @@ public class MapFragment extends Fragment {
         IMapController mapController = map.getController();
         mapController.setZoom(17);
         mapController.setCenter(new GeoPoint(14.6922, 120.971));
-
-//        Marker startMarker = new Marker(map);
-//        startMarker.setPosition(startPoint);
-//        startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
-//        startMarker.setIcon(getResources().getDrawable(R.drawable.ic_launcher));
-//        startMarker.setTitle("Start point");
-
-//        map.getOverlays().add(startMarker);
-//        map.invalidate();
-
-        // Population of Stops
-//        Stops.populate(getResources().openRawResource(R.raw.stops));
-
-        // Population of Routes
-//        Route.populate(getResources().openRawResource(R.raw.routes));
-
-        // Population of Trips
-//        Trip.populate(getResources().openRawResource(R.raw.trips));
-
-        // Population of StopTimes
-//        StopTime.populate(getResources().openRawResource(R.raw.stop_times));
-
-//        Log.d("-------------APP", "Stops size = " + Stops.getAll().size());
-//        Log.d("-------------APP", "Route size = " + Route.getAll().size());
-//        Log.d("-------------APP", "Trip size = " + Trip.getAll().size());
-//        Log.d("-------------APP", "StopTime size = "+ StopTime.getAll().size());
-
-        // Place marker on each stop
-
-//        for(Stops currStop: Stops.getAll()){
-//            Marker stopMarker = new Marker(map);
-//            stopMarker.setPosition(new GeoPoint(currStop.getLat(), currStop.getLon()));
-//            stopMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
-//            map.getOverlays().add(stopMarker);
-//        }
-//        map.invalidate();
 
         searchBtn = (Button) view.findViewById(R.id.searchBtn);
 
@@ -146,8 +108,6 @@ public class MapFragment extends Fragment {
             }
         }
 
-        Log.d("-------------APP", "waypoints -- "+waypoints.size());
-
         ArrayList<IGeoPoint> geopoints = new ArrayList<IGeoPoint>();
 
         for(int i=0; i < waypoints.size() - 1; i++) {
@@ -172,8 +132,6 @@ public class MapFragment extends Fragment {
             }
 
         }
-
-        Log.d("-------------APP", "geopoints -- "+geopoints.size());
 
         Marker startMarker = new Marker(map);
         startMarker.setTitle("Origin");
@@ -213,8 +171,6 @@ public class MapFragment extends Fragment {
 
         hopper.load(phMaps.getAbsolutePath());
 
-        Log.d("-------------APP", "found graph " + hopper.getGraphHopperStorage().toString() + ", nodes:" + hopper.getGraphHopperStorage().getNodes());
-
         map.getOverlays().clear();
 
         ArrayList<IGeoPoint> geopoints = new ArrayList<IGeoPoint>();
@@ -229,8 +185,6 @@ public class MapFragment extends Fragment {
 
             if(!resp.hasErrors()) {
                 PathWrapper pathResp = resp.getBest();
-
-                Log.d("-------------APP", "PATH INSTRUCTIONS "+pathResp.getInstructions().toString());
 
                 PointList tmp = pathResp.getPoints();
                 for (int j = 0; j < pathResp.getPoints().getSize(); j++) {
