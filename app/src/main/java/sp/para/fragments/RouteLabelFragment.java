@@ -27,7 +27,7 @@ public class RouteLabelFragment extends Fragment {
 
         routeTxtField = (TextView) view.findViewById(R.id.txtRoute);
 
-        routeTxtField.setText(this.route.getName());
+        routeTxtField.setText(this.route.getName() + " Route");
 
         return view;
     }

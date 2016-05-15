@@ -111,6 +111,12 @@ public class MapFragment extends Fragment {
         ArrayList<IGeoPoint> geopoints = new ArrayList<IGeoPoint>();
 
         for(int i=0; i < waypoints.size() - 1; i++) {
+            Marker stopMarker = new Marker(map);
+            stopMarker.setTitle(waypoints.get(i).getName());
+            stopMarker.setPosition(new GeoPoint(waypoints.get(i).getLat(), waypoints.get(i).getLon()));
+            stopMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+            map.getOverlays().add(stopMarker);
+
             GHRequest req = new GHRequest(waypoints.get(i).getLat(), waypoints.get(i).getLon(),
                     waypoints.get(i+1).getLat(), waypoints.get(i+1).getLon())
                     .setAlgorithm(AlgorithmOptions.ASTAR_BI);
