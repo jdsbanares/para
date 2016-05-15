@@ -108,15 +108,18 @@ public class MapFragment extends Fragment {
             }
         }
 
+        for(Stops currWay: waypoints){
+            Marker stopMarker = new Marker(map);
+            stopMarker.setTitle(currWay.getName());
+            stopMarker.setPosition(new GeoPoint(currWay.getLat(), currWay.getLon()));
+            stopMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+            stopMarker.setIcon(getResources().getDrawable(R.drawable.stop));
+            map.getOverlays().add(stopMarker);
+        }
+
         ArrayList<IGeoPoint> geopoints = new ArrayList<IGeoPoint>();
 
         for(int i=0; i < waypoints.size() - 1; i++) {
-            Marker stopMarker = new Marker(map);
-            stopMarker.setTitle(waypoints.get(i).getName());
-            stopMarker.setPosition(new GeoPoint(waypoints.get(i).getLat(), waypoints.get(i).getLon()));
-            stopMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
-            map.getOverlays().add(stopMarker);
-
             GHRequest req = new GHRequest(waypoints.get(i).getLat(), waypoints.get(i).getLon(),
                     waypoints.get(i+1).getLat(), waypoints.get(i+1).getLon())
                     .setAlgorithm(AlgorithmOptions.ASTAR_BI);
@@ -138,18 +141,6 @@ public class MapFragment extends Fragment {
             }
 
         }
-
-        Marker startMarker = new Marker(map);
-        startMarker.setTitle("Origin");
-        startMarker.setPosition(new GeoPoint(waypoints.get(0).getLat(), waypoints.get(0).getLon()));
-        startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
-        map.getOverlays().add(startMarker);
-
-        Marker endMarker = new Marker(map);
-        endMarker.setTitle("Destination");
-        endMarker.setPosition(new GeoPoint(waypoints.get(waypoints.size()-1).getLat(), waypoints.get(waypoints.size()-1).getLon()));
-        endMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
-        map.getOverlays().add(endMarker);
 
         PathOverlay geoPath = new PathOverlay(Color.BLUE, getActivity().getApplicationContext());
         geoPath.getPaint().setStrokeWidth(5);
@@ -209,12 +200,14 @@ public class MapFragment extends Fragment {
         startMarker.setTitle("Origin");
         startMarker.setPosition(new GeoPoint(waypoints.get(0).getStop().getLat(), waypoints.get(0).getStop().getLon()));
         startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+        startMarker.setIcon(getResources().getDrawable(R.drawable.origin));
         map.getOverlays().add(startMarker);
 
         Marker endMarker = new Marker(map);
         endMarker.setTitle("Destination");
         endMarker.setPosition(new GeoPoint(waypoints.get(waypoints.size()-1).getStop().getLat(), waypoints.get(waypoints.size()-1).getStop().getLon()));
         endMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+        endMarker.setIcon(getResources().getDrawable(R.drawable.destination));
         map.getOverlays().add(endMarker);
 
         PathOverlay geoPath = new PathOverlay(Color.BLUE, getActivity().getApplicationContext());
