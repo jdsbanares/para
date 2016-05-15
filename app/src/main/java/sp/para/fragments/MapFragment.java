@@ -127,8 +127,6 @@ public class MapFragment extends Fragment {
     }
 
     public void showExisting(Route currRoute) {
-        getFragmentManager().popBackStack(getFragmentManager().getBackStackEntryAt(0).getId(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
-
         GraphHopper hopper = new GraphHopper().forMobile();
 
         File path = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),"graphhopper/maps");
@@ -196,6 +194,15 @@ public class MapFragment extends Fragment {
 
         map.getController().setCenter(geopoints.get(0));
         map.invalidate();
+
+        getFragmentManager().popBackStack(getFragmentManager().getBackStackEntryAt(0).getId(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
+
+        RouteLabelFragment routeLabelFragment = RouteLabelFragment.newInstance(currRoute);
+
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        ft.add(R.id.main_activity, routeLabelFragment, "route_label_frag");
+        ft.addToBackStack(null);
+        ft.commit();
     }
 
     public void showRoute(ArrayList<StopsNode> waypoints) {
@@ -264,17 +271,14 @@ public class MapFragment extends Fragment {
         for(StopsNode way: waypoints) {
             if(startIns == null) {
                 startIns = new InstructionNode(way.getTime(), way.getTime(), way.getTime().getTrip().getRoute(), null);
-                currIns = startIns;
                 instList.add(startIns);
+                currIns = startIns;
             }
             else if(currIns.getEndStop().getTrip().getRoute().getRouteId().equals(way.getTime().getTrip().getRoute().getRouteId())) {
                 currIns.setEndStop(way.getTime());
             }
             else {
-                InstructionNode newIns = new InstructionNode(currIns.getEndStop(), way.getTime(), null, currIns);
-                instList.add(newIns);
-                currIns = newIns;
-                newIns = new InstructionNode(way.getTime(), way.getTime(), way.getTime().getTrip().getRoute(), currIns);
+                InstructionNode newIns = new InstructionNode(way.getTime(), way.getTime(), way.getTime().getTrip().getRoute(), currIns);
                 instList.add(newIns);
                 currIns = newIns;
             }

@@ -82,31 +82,6 @@ public class RoutesFragment extends Fragment {
             }
         });
 
-        /*
-        for(final Route currRoute: Route.getAll()) {
-            TableRow newRow = new TableRow(getActivity());
-
-            TextView trial = new TextView(getActivity());
-            trial.setTextAppearance(getActivity(), R.style.TextAppearance_AppCompat_Medium);
-            trial.setText(currRoute.getName());
-
-            newRow.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    MapFragment mf = (MapFragment) getFragmentManager().findFragmentByTag("map_frag");
-                    mf.showExisting(currRoute);
-                }
-            });
-
-            newRow.addView(trial);
-            tblRoutes.addView(newRow);
-
-            newRow.getLayoutParams().width = ViewGroup.LayoutParams.WRAP_CONTENT;
-            trial.getLayoutParams().width = ViewGroup.LayoutParams.WRAP_CONTENT;
-
-            trial.setPadding(20,10,20,10);
-        }
-        */
         return view;
     }
 

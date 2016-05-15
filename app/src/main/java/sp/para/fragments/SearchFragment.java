@@ -160,7 +160,6 @@ public class SearchFragment extends Fragment {
                             GeoPoint orig = new GeoPoint(origin.getLat(), origin.getLon());
                             GeoPoint dest = new GeoPoint(destination.getLat(), destination.getLon());
 
-                            // TODO: Do A* search_fragment using origin and destination
                             ArrayList<StopsNode> openList = new ArrayList<StopsNode>();
                             ArrayList<StopsNode> closedList = new ArrayList<StopsNode>();
                             ArrayList<StopsNode> successors = new ArrayList<StopsNode>();

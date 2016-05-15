@@ -6,7 +6,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -19,6 +21,7 @@ import sp.para.models.InstructionNode;
 public class StepsFragment extends Fragment {
 
     Button backBtn;
+    ListView listSteps;
     ArrayList<InstructionNode> instList;
 
     @Override
@@ -34,24 +37,18 @@ public class StepsFragment extends Fragment {
             }
         });
 
-        TableLayout tblSteps = (TableLayout) view.findViewById(R.id.tblSteps);
+        ArrayList<String> stepsList = new ArrayList<String>();
+        int listSize = instList.size();
+        StringBuilder dirText = new StringBuilder();
 
-        for(InstructionNode inst: instList) {
+        for(int i = 0; i < listSize; i++) {
+            InstructionNode inst = instList.get(i);
+
             TableRow newRow = new TableRow(getActivity());
 
-            StringBuilder dirText = new StringBuilder();
+            dirText.setLength(0);
 
-            if(inst.getRoute() == null) {
-                dirText.append("Walk from ");
-                dirText.append(inst.getStartStop().getStop().getName());
-                dirText.append(" to ");
-                dirText.append(inst.getEndStop().getStop().getName());
-            }
-            else if(inst.getStartStop().getId() == inst.getEndStop().getId()) {
-                dirText.append("You have arrived at ");
-                dirText.append(inst.getStartStop().getStop().getName());
-            }
-            else {
+            if(!inst.getStartStop().getStop().getStopId().equals(inst.getEndStop().getStop().getStopId())) {
                 dirText.append("Take ");
                 dirText.append(inst.getRoute().getName());
                 dirText.append(" from ");
@@ -60,18 +57,36 @@ public class StepsFragment extends Fragment {
                 dirText.append(inst.getEndStop().getStop().getName());
             }
 
-            TextView trial = new TextView(getActivity());
-            trial.setTextAppearance(getActivity(), R.style.TextAppearance_AppCompat_Medium);
-            trial.setText(dirText.toString());
+            if (i == (listSize - 1)) {
+                if(dirText.length() != 0) {
+                    stepsList.add(dirText.toString());
+                }
 
-            newRow.addView(trial);
-            tblSteps.addView(newRow);
+                dirText.setLength(0);
+                dirText.append("You have arrived at ");
+                dirText.append(inst.getEndStop().getStop().getName());
 
-            newRow.getLayoutParams().width = ViewGroup.LayoutParams.WRAP_CONTENT;
-            trial.getLayoutParams().width = ViewGroup.LayoutParams.WRAP_CONTENT;
+                stepsList.add(dirText.toString());
+            } else if (!inst.getEndStop().getStop().getStopId().equals(instList.get(i + 1).getStartStop().getStop().getStopId())) {
+                if(dirText.length() != 0) {
+                    stepsList.add(dirText.toString());
+                }
 
-            trial.setPadding(20,10,20,10);
+                dirText.setLength(0);
+                dirText.append("Walk from ");
+                dirText.append(inst.getEndStop().getStop().getName());
+                dirText.append(" to ");
+                dirText.append(instList.get(i + 1).getEndStop().getStop().getName());
+
+                stepsList.add(dirText.toString());
+            }
         }
+
+        final ArrayAdapter<String> stepsAdapter = new ArrayAdapter<String>(getActivity(), R.layout.steps_list_item, stepsList);
+
+        listSteps = (ListView) view.findViewById(R.id.listSteps);
+
+        listSteps.setAdapter(stepsAdapter);
 
         return view;
     }

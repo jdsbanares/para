@@ -44,17 +44,17 @@
 
     </FrameLayout>
 
-    <ScrollView
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:id="@+id/scrollView"
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_horizontal"
         android:background="@android:color/background_light">
 
-        <TableLayout
+        <ListView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/tblSteps"
-            android:layout_gravity="center"></TableLayout>
-    </ScrollView>
+            android:layout_height="fill_parent"
+            android:id="@+id/listSteps"
+            android:layout_gravity="center" />
+    </FrameLayout>
 
 </LinearLayout>
