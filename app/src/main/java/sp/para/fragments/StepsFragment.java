@@ -49,7 +49,18 @@ public class StepsFragment extends Fragment {
             dirText.setLength(0);
 
             if(!inst.getStartStop().getStop().getStopId().equals(inst.getEndStop().getStop().getStopId())) {
-                dirText.append("Take ");
+                dirText.append("Take a ");
+                switch(inst.getRoute().getRouteId().substring(0,9)) {
+                    case "LTFRB_PUB":
+                        dirText.append("bus with the route ");
+                        break;
+                    case "LTFRB_PUJ":
+                        dirText.append("jeepney with the route ");
+                        break;
+                    default:
+                        dirText.append("vehicle with the route ");
+                        break;
+                }
                 dirText.append(inst.getRoute().getName());
                 dirText.append(" from ");
                 dirText.append(inst.getStartStop().getStop().getName());
@@ -76,7 +87,7 @@ public class StepsFragment extends Fragment {
                 dirText.append("Walk from ");
                 dirText.append(inst.getEndStop().getStop().getName());
                 dirText.append(" to ");
-                dirText.append(instList.get(i + 1).getEndStop().getStop().getName());
+                dirText.append(instList.get(i + 1).getStartStop().getStop().getName());
 
                 stepsList.add(dirText.toString());
             }

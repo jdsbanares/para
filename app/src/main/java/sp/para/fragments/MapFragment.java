@@ -197,14 +197,14 @@ public class MapFragment extends Fragment {
         }
 
         Marker startMarker = new Marker(map);
-        startMarker.setTitle("Origin");
+        startMarker.setTitle(waypoints.get(0).getStop().getName());
         startMarker.setPosition(new GeoPoint(waypoints.get(0).getStop().getLat(), waypoints.get(0).getStop().getLon()));
         startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
         startMarker.setIcon(getResources().getDrawable(R.drawable.origin));
         map.getOverlays().add(startMarker);
 
         Marker endMarker = new Marker(map);
-        endMarker.setTitle("Destination");
+        endMarker.setTitle(waypoints.get(waypoints.size()-1).getStop().getName());
         endMarker.setPosition(new GeoPoint(waypoints.get(waypoints.size()-1).getStop().getLat(), waypoints.get(waypoints.size()-1).getStop().getLon()));
         endMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
         endMarker.setIcon(getResources().getDrawable(R.drawable.destination));
