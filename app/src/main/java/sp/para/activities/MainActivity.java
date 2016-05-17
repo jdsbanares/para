@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -109,7 +110,8 @@ public class MainActivity extends FragmentActivity {
             }
         }
         catch(IOException ex){
-            Log.d("MainActivity - ", ex.toString());
+            Log.e("MainActivity - ", ex.toString(), ex);
+            Toast.makeText(this, R.string.error_initialization_files, Toast.LENGTH_LONG).show();
         }
     }
 

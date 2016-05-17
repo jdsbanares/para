@@ -19,15 +19,9 @@ import com.graphhopper.PathWrapper;
 import com.graphhopper.routing.AlgorithmOptions;
 import com.graphhopper.util.PointList;
 
-import org.mapsforge.map.layer.cache.TileCache;
-import org.mapsforge.map.layer.renderer.TileRendererLayer;
 import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.api.IMapController;
 import org.osmdroid.bonuspack.overlays.Marker;
-import org.osmdroid.bonuspack.overlays.Polyline;
-import org.osmdroid.bonuspack.routing.OSRMRoadManager;
-import org.osmdroid.bonuspack.routing.Road;
-import org.osmdroid.bonuspack.routing.RoadManager;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
@@ -45,9 +39,6 @@ import sp.para.models.Stops;
 import sp.para.models.StopsNode;
 import sp.para.models.Trip;
 
-/**
- * Created by Jd Banares on 3/1/2016.
- */
 public class MapFragment extends Fragment {
 
     Button searchBtn;
@@ -55,28 +46,44 @@ public class MapFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        // Inflate layout for map fragment
         View view = inflater.inflate(R.layout.map_fragment, container, false);
+
+        // Instantiate osmdroid MapView via id
         map = (MapView) view.findViewById(R.id.map);
 
         // Zoom via pinch/expand
         map.setClickable(true);
+
+        // Zoom via on screen buttons
         map.setBuiltInZoomControls(true);
 
+        // Set tile source to MapQuestOSM
         map.setTileSource(TileSourceFactory.MAPQUESTOSM);
+
+        // Set multi-touch controls to true
         map.setMultiTouchControls(true);
+
+        // Set maximum and minimum zoom levels
         map.setMaxZoomLevel(17);
         map.setMinZoomLevel(13);
+
+        // Disable connection to the internet
         map.setUseDataConnection(false);
 
+        // Initialize map view to zoom level 17 with the given coordinates
         IMapController mapController = map.getController();
         mapController.setZoom(17);
         mapController.setCenter(new GeoPoint(14.6922, 120.971));
 
+        // Instantiate search button via id
         searchBtn = (Button) view.findViewById(R.id.searchBtn);
 
+        // Add a listener when search button is clicked/tapped
         searchBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // Redirect to search fragment
                 Fragment searchFragment = new SearchFragment();
                 FragmentTransaction ft = getFragmentManager().beginTransaction();
                 ft.replace(R.id.main_activity, searchFragment, "search_frag");
@@ -88,6 +95,7 @@ public class MapFragment extends Fragment {
         return view;
     }
 
+    // Show existing route and its stops in the Map View
     public void showExisting(Route currRoute) {
         GraphHopper hopper = new GraphHopper().forMobile();
 
@@ -136,7 +144,7 @@ public class MapFragment extends Fragment {
             }
             else {
                 for(Throwable error: resp.getErrors()) {
-                    Log.d("-------------APP", ""+error.getMessage());
+                    Log.e("MapFragment - ", error.getMessage(), error);
                 }
             }
 
@@ -190,7 +198,7 @@ public class MapFragment extends Fragment {
             }
             else {
                 for(Throwable error: resp.getErrors()) {
-                    Log.d("-------------APP", ""+error.getMessage());
+                    Log.e("MapFragment - ", error.getMessage(), error);
                 }
             }
 
