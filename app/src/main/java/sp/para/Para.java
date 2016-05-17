@@ -7,6 +7,7 @@ public class Para extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        // Initialize ActiveAndroid for ORM operations
         ActiveAndroid.initialize(this);
     }
 }

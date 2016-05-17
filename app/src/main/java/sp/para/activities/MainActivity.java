@@ -28,8 +28,10 @@ public class MainActivity extends FragmentActivity {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
+        // Set initial layout for MainActivity
         setContentView(R.layout.main);
 
+        // Copy files on initial run
         copyFiles();
 
         if(savedInstanceState == null) {
@@ -40,22 +42,34 @@ public class MainActivity extends FragmentActivity {
     }
 
     public void copyFiles() {
+        // Zip file for offline map tiles
         String mapFileName = "MapquestOSM.zip";
+
+        // Save path for offline map tiles in the device
         String mapPath = "/sdcard/osmdroid/MapquestOSM.zip";
+
+        // DB File for database
         String dbFileName = "Para.db";
+
+        // Save path for the database in the device
         String dbPath = "/data/data/sp.para/databases/Para.db";
 
-        Log.d("-------------APP", "COPYING FILES");
+        Log.d("MainActivity - ", "Copying files...");
 
         try {
+            // Initialize buffer, in and out streams, assets
             AssetManager assetManager = getAssets();
             InputStream in = null;
             OutputStream out = null;
             byte[] buffer = new byte[1024];
             int read;
 
+            // If there are no Stops in the database,
+            // copy the database file to the save path
             if(Stops.getCount() == 0) {
-                Log.d("-------------APP", " STOPS EMPTY!");
+                Log.d("MainActivity - ", "No stops found.");
+                Log.d("MainActivity - ", "Copying db file...");
+
                 in = assetManager.open(dbFileName);
                 out = new FileOutputStream(dbPath);
 
@@ -67,14 +81,22 @@ public class MainActivity extends FragmentActivity {
                 out.close();
             }
 
+            // For checking if osmdroid directory exists in the device
             File osmDir = new File("/sdcard/osmdroid");
 
-            if(!osmDir.exists())
+            // Checks if the osmdroid folder does not exist, create the directory
+            if(!osmDir.exists()) {
+                Log.d("MainActivity - ", "osmdroid directory does not exist.");
+                Log.d("MainActivity - ", "Making directories...");
                 osmDir.mkdirs();
+            }
 
+            // If map tiles does not exists in the device,
+            // copy the zip file containing the images of the map tiles
             File mapFile = new File(mapPath);
             if(!mapFile.exists()) {
-                Log.d("-------------APP", " MAP FILE DOES NOT EXIST!");
+                Log.d("MainActivity - ", "Map tiles does not exist.");
+                Log.d("MainActivity - ", "Copying map tiles...");
                 in = assetManager.open(mapFileName);
                 out = new FileOutputStream(mapPath);
 
@@ -87,7 +109,7 @@ public class MainActivity extends FragmentActivity {
             }
         }
         catch(IOException ex){
-            Log.d("-------------APP", " -- "+ex.toString());
+            Log.d("MainActivity - ", ex.toString());
         }
     }
 
