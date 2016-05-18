@@ -49,6 +49,8 @@ public class MapFragment extends Fragment {
         // Inflate layout for map fragment
         View view = inflater.inflate(R.layout.map_fragment, container, false);
 
+        Log.i("MapFragment - ","Setting up MapView...");
+
         // Instantiate osmdroid MapView via id
         map = (MapView) view.findViewById(R.id.map);
 
@@ -83,6 +85,7 @@ public class MapFragment extends Fragment {
         searchBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.i("MapFragment - ","Search button clicked!");
                 // Redirect to search fragment
                 Fragment searchFragment = new SearchFragment();
                 FragmentTransaction ft = getFragmentManager().beginTransaction();
@@ -97,6 +100,7 @@ public class MapFragment extends Fragment {
 
     // Show existing route and its stops in the Map View
     public void showExisting(Route currRoute) {
+        // Load graphhopper for assistance in route drawing
         GraphHopper hopper = new GraphHopper().forMobile();
 
         File path = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),"graphhopper/maps");
@@ -104,18 +108,27 @@ public class MapFragment extends Fragment {
 
         hopper.load(phMaps.getAbsolutePath());
 
+        // Clear existing map overlays
         map.getOverlays().clear();
 
+        // Will be used for plotting the stops in the map
         ArrayList<Stops> waypoints = new ArrayList<Stops>();
 
+        // Get all trips from route
         List<Trip> trips = Trip.getAllByRoute(currRoute);
 
+        // If trips is not empty
+        // Get the stops in the trip and add to waypoints
         if(!trips.isEmpty()) {
+            Log.i("MapFragment - ", "Getting stops from trip "+trips.get(0).getTripId());
             for(StopTime st: StopTime.getAllByTrip(trips.get(0))) {
                 waypoints.add(st.getStop());
             }
         }
 
+        Log.i("MapFragment - ", "Putting markers for each stop...");
+
+        // Put marker for every stop
         for(Stops currWay: waypoints){
             Marker stopMarker = new Marker(map);
             stopMarker.setTitle(currWay.getName());
@@ -125,8 +138,11 @@ public class MapFragment extends Fragment {
             map.getOverlays().add(stopMarker);
         }
 
+        Log.i("MapFragment - ", "Getting route for each road segment...");
+
         ArrayList<IGeoPoint> geopoints = new ArrayList<IGeoPoint>();
 
+        // Get geopoints for road segments in between Stops stored in waypoints
         for(int i=0; i < waypoints.size() - 1; i++) {
             GHRequest req = new GHRequest(waypoints.get(i).getLat(), waypoints.get(i).getLon(),
                     waypoints.get(i+1).getLat(), waypoints.get(i+1).getLon())
@@ -147,9 +163,11 @@ public class MapFragment extends Fragment {
                     Log.e("MapFragment - ", error.getMessage(), error);
                 }
             }
-
         }
 
+        Log.i("MapFragment - ", "Drawing path...");
+
+        // Create path from geopoints and draw in map
         PathOverlay geoPath = new PathOverlay(Color.BLUE, getActivity().getApplicationContext());
         geoPath.getPaint().setStrokeWidth(5);
         geoPath.addPoints(geopoints);
@@ -158,8 +176,12 @@ public class MapFragment extends Fragment {
         map.getController().setCenter(geopoints.get(0));
         map.invalidate();
 
+        // Removes any fragment on top of the MapView
         getFragmentManager().popBackStack(getFragmentManager().getBackStackEntryAt(0).getId(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
 
+        Log.i("MapFragment - ", "Adding label for route...");
+
+        // Add a label for the route
         RouteLabelFragment routeLabelFragment = RouteLabelFragment.newInstance(currRoute);
 
         FragmentTransaction ft = getFragmentManager().beginTransaction();
@@ -168,7 +190,9 @@ public class MapFragment extends Fragment {
         ft.commit();
     }
 
+    // Show the computed route in the MapView
     public void showRoute(ArrayList<StopsNode> waypoints) {
+        // Load graphhopper for asssitance in route drawing
         GraphHopper hopper = new GraphHopper().forMobile();
 
         File path = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),"graphhopper/maps");
@@ -176,10 +200,14 @@ public class MapFragment extends Fragment {
 
         hopper.load(phMaps.getAbsolutePath());
 
+        // Clear existing map overlays
         map.getOverlays().clear();
+
+        Log.i("MapFragment - ", "Getting route for each road segment...");
 
         ArrayList<IGeoPoint> geopoints = new ArrayList<IGeoPoint>();
 
+        // Get geopoints for road segments in between Stops stored in waypoints
         for(int i=0; i < waypoints.size() - 1; i++) {
             GHRequest req = new GHRequest(waypoints.get(i).getStop().getLat(), waypoints.get(i).getStop().getLon(),
                     waypoints.get(i+1).getStop().getLat(), waypoints.get(i+1).getStop().getLon())
@@ -201,9 +229,11 @@ public class MapFragment extends Fragment {
                     Log.e("MapFragment - ", error.getMessage(), error);
                 }
             }
-
         }
 
+        Log.i("MapFragment - ", "Putting markers in the map...");
+
+        // Put a marker in the route origin in the map
         Marker startMarker = new Marker(map);
         startMarker.setTitle(waypoints.get(0).getStop().getName());
         startMarker.setPosition(new GeoPoint(waypoints.get(0).getStop().getLat(), waypoints.get(0).getStop().getLon()));
@@ -211,6 +241,7 @@ public class MapFragment extends Fragment {
         startMarker.setIcon(getResources().getDrawable(R.drawable.origin));
         map.getOverlays().add(startMarker);
 
+        // Put a marker in the route destination in the map
         Marker endMarker = new Marker(map);
         endMarker.setTitle(waypoints.get(waypoints.size()-1).getStop().getName());
         endMarker.setPosition(new GeoPoint(waypoints.get(waypoints.size()-1).getStop().getLat(), waypoints.get(waypoints.size()-1).getStop().getLon()));
@@ -218,6 +249,9 @@ public class MapFragment extends Fragment {
         endMarker.setIcon(getResources().getDrawable(R.drawable.destination));
         map.getOverlays().add(endMarker);
 
+        Log.i("MapFragment - ", "Drawing path...");
+
+        // Create path from geopoints and draw in map
         PathOverlay geoPath = new PathOverlay(Color.BLUE, getActivity().getApplicationContext());
         geoPath.getPaint().setStrokeWidth(5);
         geoPath.addPoints(geopoints);
@@ -225,10 +259,17 @@ public class MapFragment extends Fragment {
 
         map.getController().setCenter(geopoints.get(0));
 
+        Log.i("MapFragment - ", "Creating instructions...");
+
+        // Create instruction nodes to be passed in the steps fragment
         ArrayList<InstructionNode> instList = new ArrayList<InstructionNode>();
         InstructionNode startIns = null;
         InstructionNode currIns = null;
 
+        // Iterate waypoints for instructions
+        // If the next waypoint has the same route as the current waypoint,
+        // update the current instruction node's end stop to the current waypoint
+        // Else, create a new instruction node
         for(StopsNode way: waypoints) {
             if(startIns == null) {
                 startIns = new InstructionNode(way.getTime(), way.getTime(), way.getTime().getTrip().getRoute(), null);
@@ -245,8 +286,12 @@ public class MapFragment extends Fragment {
             }
         }
 
+        // Removes any fragment on top of the MapView
         getFragmentManager().popBackStack(getFragmentManager().getBackStackEntryAt(0).getId(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
 
+        Log.i("MapFragment - ", "Adding label for origin and destination...");
+
+        // Add a fragment that shows the origin and destination
         PartialStepsFragment partialStepsFragment = PartialStepsFragment.newInstance(waypoints.get(0).getStop(), waypoints.get(waypoints.size() - 1).getStop(), instList);
 
         FragmentTransaction ft = getFragmentManager().beginTransaction();

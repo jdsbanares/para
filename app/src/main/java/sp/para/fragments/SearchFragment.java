@@ -48,7 +48,8 @@ public class SearchFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.search_fragment, container, false);
 
-        Log.d("-------------APP", "Stops size = " + Stops.getAll().size());
+        Log.i("SearchFragment - ", "Setting up Search Fragment...");
+        Log.i("SearchFragment - ", "Stops size = " + Stops.getAll().size());
 
         List<Stops> stopsList = Stops.getAll();
 
@@ -57,6 +58,7 @@ public class SearchFragment extends Fragment {
         originTxtFld = (AutoCompleteTextView) view.findViewById(R.id.searchOrigin);
         destTxtFld = (AutoCompleteTextView) view.findViewById(R.id.searchDestination);
 
+        // Assign an adapter containing the choices for origin field
         final ArrayAdapter<Stops> originAdapter = new ArrayAdapter<Stops>(getActivity(), android.R.layout.simple_list_item_1, stopsList);
         originTxtFld.setAdapter(originAdapter);
 
@@ -67,6 +69,7 @@ public class SearchFragment extends Fragment {
             }
         });
 
+        // Assign an adapter containing the choices for destination field
         final ArrayAdapter<Stops> destAdapter = new ArrayAdapter<Stops>(getActivity(), android.R.layout.simple_list_item_1, stopsList);
         destTxtFld.setAdapter(destAdapter);
 
@@ -77,26 +80,34 @@ public class SearchFragment extends Fragment {
             }
         });
 
+        // Goes back to previous fragment
         backBtn = (Button) view.findViewById(R.id.backBtn);
 
         backBtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.i("SearchFragment - ", "Back button clicked!");
                 getFragmentManager().popBackStack();
             }
         });
 
         routesBtn = (Button) view.findViewById(R.id.routesBtn);
 
+        // Goes to routes fragment
         routesBtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.i("SearchFragment - ", "Routes button clicked!");
+
                 View currView = getActivity().getCurrentFocus();
+                // Closes on-screen keyboard if visible
                 if(currView != null) {
+                    Log.i("SearchFragment - ", "Closing on-screen keyboard...");
                     InputMethodManager inputManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                     inputManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
                 }
 
+                // Go to RoutesFragment
                 RoutesFragment routesFragment = new RoutesFragment();
 
                 FragmentTransaction ft = getFragmentManager().beginTransaction();
@@ -106,15 +117,21 @@ public class SearchFragment extends Fragment {
             }
         });
 
+        // Goes to update fragment
         routesBtn.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
+                Log.i("SearchFragment - ", "Routes button long clicked!");
+
                 View currView = getActivity().getCurrentFocus();
+                // Closes on-screen keyboard if visible
                 if(currView != null) {
+                    Log.i("SearchFragment - ", "Closing on-screen keyboard...");
                     InputMethodManager inputManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                     inputManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
                 }
 
+                // Go to UpdateFragment
                 UpdateFragment updateFragment = new UpdateFragment();
 
                 FragmentTransaction ft = getFragmentManager().beginTransaction();
@@ -125,17 +142,23 @@ public class SearchFragment extends Fragment {
             }
         });
 
+
         findRouteBtn = (Button) view.findViewById(R.id.findRouteBtn);
 
         findRouteBtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.i("SearchFragment - ", "Find Routes button clicked!");
+
                 View currView = getActivity().getCurrentFocus();
+                // Closes on-screen keyboard if visible
                 if(currView != null) {
+                    Log.i("SearchFragment - ", "Closing on-screen keyboard...");
                     InputMethodManager inputManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                     inputManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
                 }
 
+                // Create toast for null inputs
                 if(origin == null || destination == null) {
                     Toast.makeText(getActivity(), R.string.null_orig_dest, Toast.LENGTH_LONG).show();
                 }
@@ -143,6 +166,8 @@ public class SearchFragment extends Fragment {
                     Toast.makeText(getActivity(), R.string.same_orig_dest, Toast.LENGTH_LONG).show();
                 }
                 else {
+                    // Disable buttons and fields
+                    Log.i("SearchFragment - ", "Disabling buttons and fields...");
 
                     backBtn.setEnabled(false);
                     routesBtn.setEnabled(false);
@@ -151,22 +176,27 @@ public class SearchFragment extends Fragment {
                     destTxtFld.setEnabled(false);
                     progressBar.setVisibility(View.VISIBLE);
 
+                    Log.i("SearchFragment - ", "Starting A* search...");
+                    // Create new thread for A* search
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
                             GeoPoint orig = new GeoPoint(origin.getLat(), origin.getLon());
                             GeoPoint dest = new GeoPoint(destination.getLat(), destination.getLon());
 
+                            // Set up lists for A*
                             ArrayList<StopsNode> openList = new ArrayList<StopsNode>();
                             ArrayList<StopsNode> closedList = new ArrayList<StopsNode>();
                             ArrayList<StopsNode> successors = new ArrayList<StopsNode>();
 
                             ArrayList<StopTime> initialStops = (ArrayList) StopTime.getAllByStops(origin);
 
+                            // Add origin to openList
                             openList.add(new StopsNode(orig.distanceTo(dest), 0, null, initialStops.get(0)));
 
                             int iter = 0;
 
+                            // Start A* search
                             while (!openList.isEmpty()) {
 
                                 StopsNode node;
@@ -191,12 +221,14 @@ public class SearchFragment extends Fragment {
                                     StopTime prev = node.getTime().getPrev();
                                     StopTime next = node.getTime().getNext();
 
+                                    // Get previous stop in trip
                                     if (prev != null) {
                                         Stops prevStop = prev.getStop();
                                         GeoPoint prevPoint = new GeoPoint(prevStop.getLat(), prevStop.getLon());
                                         successors.add(new StopsNode(prevPoint.distanceTo(dest), node.getCost() + nodePoint.distanceTo(prevPoint), node, prev));
                                     }
 
+                                    // Get next stop in trip
                                     if (next != null) {
                                         Stops nextStop = next.getStop();
                                         GeoPoint nextPoint = new GeoPoint(nextStop.getLat(), nextStop.getLon());
@@ -204,6 +236,7 @@ public class SearchFragment extends Fragment {
                                     }
                                 }
 
+                                // Add all stops within 500 meters to successors
                                 for (Stops st : Stops.getAllWithinDistance(node.getStop())) {
                                     GeoPoint stPoint = new GeoPoint(st.getLat(), st.getLon());
                                     successors.add(new StopsNode(stPoint.distanceTo(dest), node.getCost() + nodePoint.distanceTo(stPoint), node, StopTime.getAllByStops(st).get(0)));
@@ -241,6 +274,7 @@ public class SearchFragment extends Fragment {
 
                             }
 
+                            // Trace back computed path
                             final ArrayList<StopsNode> pathList = new ArrayList<StopsNode>();
                             StopsNode currNode = closedList.get(closedList.size() - 1);
 
@@ -249,6 +283,7 @@ public class SearchFragment extends Fragment {
                                 currNode = currNode.getParent();
                             }
 
+                            // Redirect to map fragment
                             final MapFragment mf = (MapFragment) getFragmentManager().findFragmentByTag("map_frag");
                             mf.getView().post(new Runnable() {
                                 @Override
@@ -262,6 +297,7 @@ public class SearchFragment extends Fragment {
                 }
             }
 
+            // Helper method for finding where to put node in the given list
             public int indexInList(List<StopsNode> stopsList, StopsNode node) {
                 for(int i = 0; i < stopsList.size(); i++) {
                     if(stopsList.get(i).getStop().getStopId().equals(node.getStop().getStopId()))
@@ -270,6 +306,8 @@ public class SearchFragment extends Fragment {
                 return -1;
             }
 
+            // Helper method for inserting node in given list
+            // Used for sorting purposes
             public void insertNode(List<StopsNode> stopsList, StopsNode node) {
 
                 if(stopsList.isEmpty())

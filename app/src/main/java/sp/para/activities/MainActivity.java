@@ -55,7 +55,7 @@ public class MainActivity extends FragmentActivity {
         // Save path for the database in the device
         String dbPath = "/data/data/sp.para/databases/Para.db";
 
-        Log.d("MainActivity - ", "Copying files...");
+        Log.i("MainActivity - ", "Copying files...");
 
         try {
             // Initialize buffer, in and out streams, assets
@@ -68,8 +68,8 @@ public class MainActivity extends FragmentActivity {
             // If there are no Stops in the database,
             // copy the database file to the save path
             if(Stops.getCount() == 0) {
-                Log.d("MainActivity - ", "No stops found.");
-                Log.d("MainActivity - ", "Copying db file...");
+                Log.i("MainActivity - ", "No stops found.");
+                Log.i("MainActivity - ", "Copying db file...");
 
                 in = assetManager.open(dbFileName);
                 out = new FileOutputStream(dbPath);
@@ -87,8 +87,8 @@ public class MainActivity extends FragmentActivity {
 
             // Checks if the osmdroid folder does not exist, create the directory
             if(!osmDir.exists()) {
-                Log.d("MainActivity - ", "osmdroid directory does not exist.");
-                Log.d("MainActivity - ", "Making directories...");
+                Log.i("MainActivity - ", "osmdroid directory does not exist.");
+                Log.i("MainActivity - ", "Making directories...");
                 osmDir.mkdirs();
             }
 
@@ -96,8 +96,8 @@ public class MainActivity extends FragmentActivity {
             // copy the zip file containing the images of the map tiles
             File mapFile = new File(mapPath);
             if(!mapFile.exists()) {
-                Log.d("MainActivity - ", "Map tiles does not exist.");
-                Log.d("MainActivity - ", "Copying map tiles...");
+                Log.i("MainActivity - ", "Map tiles does not exist.");
+                Log.i("MainActivity - ", "Copying map tiles...");
                 in = assetManager.open(mapFileName);
                 out = new FileOutputStream(mapPath);
 
