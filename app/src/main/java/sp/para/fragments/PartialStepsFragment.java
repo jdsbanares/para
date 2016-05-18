@@ -56,7 +56,7 @@ public class PartialStepsFragment extends Fragment {
         return view;
     }
 
-    // Created new instance for PartialStepsFragment
+    // Creates new instance for PartialStepsFragment
     public static PartialStepsFragment newInstance(Stops from, Stops to, ArrayList<InstructionNode> instList) {
         Log.i("PartialStepsFragment - ", "Creating new instance of partial steps fragment...");
         PartialStepsFragment newFragment = new PartialStepsFragment();
