@@ -2,9 +2,20 @@ package sp.para.models;
 
 public class InstructionNode {
 
+    // Used for building instructions when a path has been found
+
+    // Start point for this instruction
     private StopTime startStop;
+
+    // End point for this instruction
     private StopTime endStop;
+
+    // Route for this instruction
+    // If route is null, instruction calls for walking
     private Route route;
+
+    // Parent node for instruction
+    // Used for tracing back
     private InstructionNode parent;
 
     public InstructionNode(StopTime startStop, StopTime endStop, Route route, InstructionNode parent) {

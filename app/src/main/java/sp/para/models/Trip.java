@@ -16,9 +16,13 @@ import java.util.List;
 @Table(name="trip")
 public class Trip extends Model {
 
+    // Represents a single trip
+
+    // Trip ID from GTFS
     @Column(name="trip_id")
     private String trip_id;
 
+    // Route where trip belongs from GTFS
     @Column(name="route")
     private Route route;
 
@@ -46,12 +50,14 @@ public class Trip extends Model {
         return this.route;
     }
 
+    // Get all stored trips
     public static List<Trip> getAll(){
         return new Select()
                 .from(Trip.class)
                 .execute();
     }
 
+    // Get all trips from a route
     public static List<Trip> getAllByRoute(Route route){
         return new Select()
                 .from(Trip.class)
@@ -59,6 +65,7 @@ public class Trip extends Model {
                 .execute();
     }
 
+    // Get trip by trip id
     public static Trip getByTripId(String trip_id){
         return new Select()
                 .from(Trip.class)
@@ -66,6 +73,7 @@ public class Trip extends Model {
                 .executeSingle();
     }
 
+    // Population for trips
     public static void populate(InputStream tripInStream) {
         ActiveAndroid.beginTransaction();
         try {
@@ -73,12 +81,14 @@ public class Trip extends Model {
             Trip checker;
             String[] nextLine;
 
-            Log.d("-------------Trip", "Populating Trip!");
+            Log.i("Trip - ", "Populating Trip...");
 
             while ((nextLine = reader.readNext()) != null) {
-
+                // Check if trip has already been added
                 checker = getByTripId(nextLine[10]);
 
+                // If trip exists, update data
+                // Else, create new trip object to be saved
                 if(checker != null) {
                     checker.setRoute(Route.getByRouteId(nextLine[0]));
                     checker.save();
@@ -89,9 +99,10 @@ public class Trip extends Model {
                 }
             }
             ActiveAndroid.setTransactionSuccessful();
+            Log.i("Trip - ", "Successfully populated Trip");
         }
         catch(Exception ex) {
-            Log.d("-------------Trip", "Exception caught!\n" + ex);
+            Log.e("Trip - ", ex.toString(), ex);
         }
         finally {
             ActiveAndroid.endTransaction();

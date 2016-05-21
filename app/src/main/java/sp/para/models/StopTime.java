@@ -16,12 +16,19 @@ import java.util.List;
 @Table(name="stop_time")
 public class StopTime extends Model {
 
+    // Represents a stop time
+    // Extracted from the GTFS feed
+    // Contains data regarding stop, trip, and the ordering of the stop in the trip
+
+    // Denotes the order of the stop in the trip
     @Column(name="sequence")
     private int sequence;
 
+    // Trip from GTFS
     @Column(name="trip")
     private Trip trip;
 
+    // Stop from GTFS
     @Column(name="stop")
     private Stops stop;
 
@@ -58,6 +65,7 @@ public class StopTime extends Model {
         return this.sequence;
     }
 
+    // Get next StopTime for the trip
     public StopTime getNext() {
         return new Select()
                 .from(StopTime.class)
@@ -65,6 +73,7 @@ public class StopTime extends Model {
                 .executeSingle();
     }
 
+    // Get previous StopTime for the trip
     public StopTime getPrev() {
         return new Select()
                 .from(StopTime.class)
@@ -72,12 +81,14 @@ public class StopTime extends Model {
                 .executeSingle();
     }
 
+    // Get all StopTimes
     public static List<StopTime> getAll(){
         return new Select()
                 .from(StopTime.class)
                 .execute();
     }
 
+    // Get all StopTimes by trip
     public static List<StopTime> getAllByTrip(Trip trip) {
         return new Select()
                 .from(StopTime.class)
@@ -86,6 +97,7 @@ public class StopTime extends Model {
                 .execute();
     }
 
+    // Get all StopTimes by Stop
     public static List<StopTime> getAllByStops(Stops stop) {
         return new Select()
                 .from(StopTime.class)
@@ -93,6 +105,7 @@ public class StopTime extends Model {
                 .execute();
     }
 
+    // Get all StopTimes by both trip and stop
     public static StopTime getByTripAndStops(Trip trip, Stops stop) {
         return new Select()
                 .from(StopTime.class)
@@ -100,6 +113,7 @@ public class StopTime extends Model {
                 .executeSingle();
     }
 
+    // Population for StopTime
     public static void populate(InputStream stopTimeInStream) {
         ActiveAndroid.beginTransaction();
         try {
@@ -109,16 +123,24 @@ public class StopTime extends Model {
             Trip tripChecker;
             String[] nextLine;
 
-            Log.d("-------------StopTime", "Populating StopTime!");
+            Log.i("StopTime - ", "Populating StopTime...");
 
             while ((nextLine = reader.readNext()) != null) {
+                // Checks if stop is saved
                 stopChecker = Stops.getByStopId(nextLine[2]);
 
+                // If stop is saved, proceed
                 if(stopChecker != null) {
+                    // Checks if trip is saved
                     tripChecker = Trip.getByTripId(nextLine[0]);
+
+                    // If trip is saved, proceed
                     if(tripChecker != null) {
+                        // Check if StopTime has already been added
                         checker = getByTripAndStops(tripChecker, stopChecker);
 
+                        // If StopTime exists, update data
+                        // Else, create new StopTime object to be saved
                         if(checker != null) {
                             checker.setTrip(tripChecker);
                             checker.setStop(stopChecker);
@@ -133,9 +155,10 @@ public class StopTime extends Model {
                 }
             }
             ActiveAndroid.setTransactionSuccessful();
+            Log.i("StopTime - ", "Successfully populated StopTime");
         }
         catch(Exception ex) {
-            Log.d("-------------StopTime", "Exception caught!", ex);
+            Log.e("StopTime - ", ex.toString(), ex);
         }
         finally {
             ActiveAndroid.endTransaction();

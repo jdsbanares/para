@@ -18,12 +18,18 @@ import java.util.List;
 @Table(name="route")
 public class Route extends Model {
 
+    // Represents a route
+    // Extracted from the GTFS feed
+
+    // Route ID from GTFS
     @Column(name="route_id")
     private String route_id;
 
+    // Route name from GTFS
     @Column(name="name")
     private String name;
 
+    // Route description from GTFS
     @Column(name="description")
     private String description;
 
@@ -48,39 +54,13 @@ public class Route extends Model {
 
     public String getDescription() { return this.description; }
 
+    // Override to show route name when toString() is called
     @Override
     public String toString() {
         return this.name;
     }
 
-    /*
-    public static void cleanUp(){
-        ArrayList<StopTime> stopTimes = new Select()
-                .from(StopTime.class)
-                .execute();
-
-        ArrayList<Long> tripId = new ArrayList<Long>();
-        for(StopTime st: stopTimes){
-            tripId.add(st.getTrip().getId());
-        }
-
-        ArrayList<Trip> trips = new Select()
-                .from(Trip.class)
-                .where("id in ?", tripId.toArray())
-                .execute();
-
-        ArrayList<Long> routeId = new ArrayList<Long>();
-        for(Trip tr: trips){
-            routeId.add(tr.getRoute().getId());
-        }
-
-        new Delete()
-                .from(Route.class)
-                .where("id not in ?", routeId.toArray())
-                .execute();
-    }
-    */
-
+    // Gets all stored routes ordered by name
     public static List<Route> getAll(){
         return new Select()
                 .from(Route.class)
@@ -88,6 +68,7 @@ public class Route extends Model {
                 .execute();
     }
 
+    // Get route by route_id
     public static Route getByRouteId(String route_id){
         return new Select()
                 .from(Route.class)
@@ -95,6 +76,7 @@ public class Route extends Model {
                 .executeSingle();
     }
 
+    // Population for routes
     public static void populate(InputStream routeInStream) {
         ActiveAndroid.beginTransaction();
         try {
@@ -102,12 +84,14 @@ public class Route extends Model {
             Route checker;
             String[] nextLine;
 
-            Log.d("-------------Route", "Populating Route!");
+            Log.i("Route - ", "Populating Routes...");
 
             while ((nextLine = reader.readNext()) != null) {
-
+                // Check if route has already been added
                 checker = getByRouteId(nextLine[9]);
 
+                // If route exists, update data
+                // Else, create new route object to be saved
                 if(checker != null) {
                     checker.setName(nextLine[2]);
                     checker.setDescription(nextLine[3]);
@@ -119,9 +103,10 @@ public class Route extends Model {
                 }
             }
             ActiveAndroid.setTransactionSuccessful();
+            Log.i("Route - ", "Successfully populated Routes");
         }
         catch(Exception ex) {
-            Log.d("-------------Route", "Exception caught!\n" + ex);
+            Log.e("Route - ", ex.toString(), ex);
         }
         finally {
             ActiveAndroid.endTransaction();

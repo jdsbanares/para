@@ -19,20 +19,29 @@ import java.util.List;
 @Table(name="stops")
 public class Stops extends Model {
 
+    // Represents a single stop
+    // Extracted from the GTFS feed
+
+    // Bounds for the stop coordinates
+    // Used for data population
     private static double MIN_LAT = 14.668743;
     private static double MAX_LAT = 14.751737;
     private static double MIN_LON = 120.926378;
     private static double MAX_LON = 121.024578;
 
+    // Stop ID from GTFS
     @Column(name="stop_id")
     private String stop_id;
 
+    // Stop name from GTFS
     @Column(name="name")
     private String name;
 
+    // Stop latitude from GTFS
     @Column(name="lat")
     private double lat;
 
+    // Stop longitude from GTFS
     @Column(name="lon")
     private double lon;
 
@@ -80,11 +89,13 @@ public class Stops extends Model {
         return this.lon;
     }
 
+    // Override to show stop name when toString() is called
     @Override
     public String toString() {
         return this.name;
     }
 
+    // Get total count of stored stops
     public static int getCount(){
         return new Select()
                 .from(Stops.class)
@@ -92,12 +103,14 @@ public class Stops extends Model {
                 .size();
     }
 
+    // Get all stored stops
     public static List<Stops> getAll(){
         return new Select()
                 .from(Stops.class)
                 .execute();
     }
 
+    // Get stop by stop id
     public static Stops getByStopId(String stop_id){
         return new Select()
                 .from(Stops.class)
@@ -105,6 +118,7 @@ public class Stops extends Model {
                 .executeSingle();
     }
 
+    // Get all stops within 500 meters of the given stop
     public static List<Stops> getAllWithinDistance(Stops arg) {
         ArrayList<Stops> stopsList = new ArrayList<Stops>();
         GeoPoint argPoint = new GeoPoint(arg.getLat(), arg.getLon());
@@ -116,6 +130,7 @@ public class Stops extends Model {
         return stopsList;
     }
 
+    // Population for stops
     public static void populate(InputStream stopInStream) {
         ActiveAndroid.beginTransaction();
         try {
@@ -123,15 +138,19 @@ public class Stops extends Model {
             Stops checker;
             String[] nextLine;
 
-            Log.d("-------------Stops", "Populating Stops!");
+            Log.i("Stops - ", "Populating Stops...");
 
             while ((nextLine = reader.readNext()) != null) {
                 double newLat = Double.parseDouble(nextLine[4]);
                 double newLon = Double.parseDouble(nextLine[5]);
 
+                // Check if current stop is within bounds
                 if(Stops.MIN_LAT <= newLat && newLat <= Stops.MAX_LAT && Stops.MIN_LON <= newLon && newLon <= Stops.MAX_LON) {
+                    // Check if stop has already been added
                     checker = getByStopId(nextLine[0]);
 
+                    // If stop exists, update data
+                    // Else, create new stop object to be saved
                     if(checker != null) {
                         checker.setName(nextLine[2]);
                         checker.setLat(newLat);
@@ -145,9 +164,10 @@ public class Stops extends Model {
                 }
             }
             ActiveAndroid.setTransactionSuccessful();
+            Log.i("Stops - ", "Successfully populated Stops");
         }
         catch(Exception ex) {
-            Log.d("-------------Stops", "Exception caught!\n" + ex);
+            Log.e("Stops - ", ex.toString(), ex);
         }
         finally {
             ActiveAndroid.endTransaction();
