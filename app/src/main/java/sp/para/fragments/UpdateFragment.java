@@ -39,6 +39,9 @@ public class UpdateFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.update_fragment, container, false);
 
+        Log.i("UpdateFragment - ", "Setting up Update Fragment...");
+
+        // Goes back to previous fragment
         backBtn = (Button) view.findViewById(R.id.backBtn);
 
         backBtn.setOnClickListener(new View.OnClickListener() {
@@ -48,27 +51,37 @@ public class UpdateFragment extends Fragment {
             }
         });
 
+        // Updates the date when clicked
         updateBtn = (Button) view.findViewById(R.id.updateBtn);
 
         updateBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.i("UpdateFragment - ", "Update button clicked!");
+                Log.i("UpdateFragment - ", "Update starting...");
+
+                // Creates a toast to inform the user that update has been started
                 Toast.makeText(getActivity(), R.string.update_start, Toast.LENGTH_LONG).show();
 
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
                         try {
+                            // Get files for each model
                             FileInputStream stopsFile = new FileInputStream(new File(Environment.getExternalStorageDirectory(), "gtfs/stops.txt"));
                             FileInputStream routesFile = new FileInputStream(new File(Environment.getExternalStorageDirectory(), "gtfs/routes.txt"));
                             FileInputStream tripFile = new FileInputStream(new File(Environment.getExternalStorageDirectory(), "gtfs/trips.txt"));
                             FileInputStream stopTimeFile = new FileInputStream(new File(Environment.getExternalStorageDirectory(), "gtfs/stop_times.txt"));
 
+                            // Start population for each model
                             Stops.populate(stopsFile);
                             Route.populate(routesFile);
                             Trip.populate(tripFile);
                             StopTime.populate(stopTimeFile);
 
+                            Log.i("UpdateFragment - ", "Update finished!");
+
+                            // Creates a notification to to inform the user that update has been finished
                             NotificationCompat.Builder mBuilder =
                                     new NotificationCompat.Builder(getActivity())
                                     .setSmallIcon(R.drawable.ic_directions_white_36dp)
@@ -77,11 +90,15 @@ public class UpdateFragment extends Fragment {
 
                             mBuilder.setDefaults(Notification.DEFAULT_LIGHTS | Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE);
 
+                            // Send the notification
                             NotificationManager mNotifyMgr =
                                     (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
                             mNotifyMgr.notify(001, mBuilder.build());
                         }
                         catch(FileNotFoundException ex) {
+                            Log.e("UpdateFragment - ", ex.toString(), ex);
+
+                            // Creates a notification to to inform the user that update has failed
                             NotificationCompat.Builder mBuilder =
                                     new NotificationCompat.Builder(getActivity())
                                             .setSmallIcon(R.drawable.ic_directions_white_36dp)
@@ -90,6 +107,7 @@ public class UpdateFragment extends Fragment {
 
                             mBuilder.setDefaults(Notification.DEFAULT_LIGHTS | Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE);
 
+                            // Send the notification
                             NotificationManager mNotifyMgr =
                                     (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
                             mNotifyMgr.notify(002, mBuilder.build());
