@@ -28,6 +28,9 @@ public class StepsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.steps_fragment, container, false);
 
+        Log.i("StepsFragment - ", "Setting up Steps Fragment...");
+
+        // Goes back to previous fragment
         backBtn = (Button) view.findViewById(R.id.backBtn);
 
         backBtn.setOnClickListener(new View.OnClickListener() {
@@ -37,19 +40,23 @@ public class StepsFragment extends Fragment {
             }
         });
 
+        Log.i("StepsFragment - ", "Building instructions...");
+
         ArrayList<String> stepsList = new ArrayList<String>();
         int listSize = instList.size();
         StringBuilder dirText = new StringBuilder();
 
+        // Iterate over instList to produce step-by-step instructions
         for(int i = 0; i < listSize; i++) {
             InstructionNode inst = instList.get(i);
 
-            TableRow newRow = new TableRow(getActivity());
-
             dirText.setLength(0);
 
+            // If start and end stops of the current instruction node is not equal,
+            // create an instruction for riding a vehicle
             if(!inst.getStartStop().getStop().getStopId().equals(inst.getEndStop().getStop().getStopId())) {
                 dirText.append("Take a ");
+                // Check which type of transportation will be used
                 switch(inst.getRoute().getRouteId().substring(0,9)) {
                     case "LTFRB_PUB":
                         dirText.append("bus with the route ");
@@ -68,7 +75,11 @@ public class StepsFragment extends Fragment {
                 dirText.append(inst.getEndStop().getStop().getName());
             }
 
+            // If the current instruction node is the last instruction node,
+            // inform the user that he/she has arrived at the destination
+            // Else, create an instruction for walking
             if (i == (listSize - 1)) {
+                // Add instruction to stepsList if dirText is not empty
                 if(dirText.length() != 0) {
                     stepsList.add(dirText.toString());
                 }
@@ -78,7 +89,9 @@ public class StepsFragment extends Fragment {
                 dirText.append(inst.getEndStop().getStop().getName());
 
                 stepsList.add(dirText.toString());
-            } else if (!inst.getEndStop().getStop().getStopId().equals(instList.get(i + 1).getStartStop().getStop().getStopId())) {
+            }
+            else if (!inst.getEndStop().getStop().getStopId().equals(instList.get(i + 1).getStartStop().getStop().getStopId())) {
+                // Add instruction to stepsList if dirText is not empty
                 if(dirText.length() != 0) {
                     stepsList.add(dirText.toString());
                 }
@@ -93,6 +106,7 @@ public class StepsFragment extends Fragment {
             }
         }
 
+        // Assign stepsList to array adapter for list view content in the fragment
         final ArrayAdapter<String> stepsAdapter = new ArrayAdapter<String>(getActivity(), R.layout.steps_list_item, stepsList);
 
         listSteps = (ListView) view.findViewById(R.id.listSteps);

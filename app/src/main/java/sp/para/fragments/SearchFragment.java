@@ -194,8 +194,6 @@ public class SearchFragment extends Fragment {
                             // Add origin to openList
                             openList.add(new StopsNode(orig.distanceTo(dest), 0, null, initialStops.get(0)));
 
-                            int iter = 0;
-
                             // Start A* search
                             while (!openList.isEmpty()) {
 
@@ -274,6 +272,8 @@ public class SearchFragment extends Fragment {
 
                             }
 
+                            Log.i("SearchFragment - ", "Found path!");
+                            Log.i("SearchFragment - ", "Tracing back...");
                             // Trace back computed path
                             final ArrayList<StopsNode> pathList = new ArrayList<StopsNode>();
                             StopsNode currNode = closedList.get(closedList.size() - 1);
