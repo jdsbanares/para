@@ -4,16 +4,20 @@ import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.res.AssetManager;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.StrictMode;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.widget.Toast;
+
+import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Iterator;
 
 import sp.para.R;
 import sp.para.fragments.MapFragment;
@@ -55,6 +59,9 @@ public class MainActivity extends FragmentActivity {
         // Save path for the database in the device
         String dbPath = "/data/data/sp.para/databases/Para.db";
 
+        // Folder for graphhopper files
+        String ghFileName = "philippines-gh";
+
         Log.i("MainActivity - ", "Copying files...");
 
         try {
@@ -85,7 +92,7 @@ public class MainActivity extends FragmentActivity {
             // For checking if osmdroid directory exists in the device
             File osmDir = new File("/sdcard/osmdroid");
 
-            // Checks if the osmdroid folder does not exist, create the directory
+            // If the osmdroid folder does not exist, create the directory
             if(!osmDir.exists()) {
                 Log.i("MainActivity - ", "osmdroid directory does not exist.");
                 Log.i("MainActivity - ", "Making directories...");
@@ -107,6 +114,26 @@ public class MainActivity extends FragmentActivity {
                 in.close();
                 out.flush();
                 out.close();
+            }
+
+            // If the graphhopper folder does not exist, create the directory and copy the files
+            File ghDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),"graphhopper/maps/philippines-gh");
+            if(!ghDir.exists()) {
+                Log.i("MainActivity - ", "graphhopper directory does not exist.");
+                Log.i("MainActivity - ", "Making directories...");
+                ghDir.mkdirs();
+
+                for(String ghFile: assetManager.list(ghFileName)) {
+                    in = assetManager.open(ghFileName+"/"+ghFile);
+                    out = new FileOutputStream(ghDir.getPath()+"/"+ghFile);
+
+                    while((read = in.read(buffer)) != -1){
+                        out.write(buffer, 0, read);
+                    }
+                    in.close();
+                    out.flush();
+                    out.close();
+                }
             }
         }
         catch(IOException ex){
